@@ -14,10 +14,11 @@ export default function Home() {
           uppercase 
           text-4xl
           md:text-8xl 
-          font-bold'>
+          font-black
+          md:font-bold'>
           A Blank Canvas.
         </a>
-        <div className="flex flex-col items-center pt-8 px-6 w-full">
+        <div className="flex flex-col items-center pt-3 md:pt-8 px-6 w-full">
           <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-96" />
           {/* <p className="font-marydale text-xl md:text-4xl font-bold ">Hi {':)'}</p> */}
         </div>
@@ -32,13 +33,14 @@ export default function Home() {
         <p className='pt-20 flex items-center text-center 
           font-marydale  
           uppercase 
-          text-3xl
+          text-4xl
           md:text-5xl 
-          font-bold'>
+          font-black
+          md:font-bold'>
           I made this.
         </p>
         <div className="pt-4 flex flex-col justify-center text-xl w-full">
-          <div className="max-w-full rounded-3xl overflow-hidden border border-black flex max-h-40 cursor-pointer"
+          <div className="max-w-full rounded-3xl overflow-hidden border z-10  border-black flex max-h-40 cursor-pointer"
             onClick={() => setShowSections(!showSections)}>
             <div className="bg-background p-3 px-4 w-1/2 flex flex-col justify-between">
               <h2 className="text-xl md:text-2xl ">Coloso</h2>
@@ -47,7 +49,7 @@ export default function Home() {
             <img src="/image/coloso.png" alt="Tools" className="w-1/2 object-cover" />
           </div>
           <div
-            className={`font-marydale grid grid-cols-3 gap-4 px-12 text-base overflow-hidden transition-all duration-500 ease-in-out ${showSections ? 'max-h-40' : 'max-h-0'}`}
+            className={`font-marydale grid grid-cols-3 gap-4 px-12 text-base transition-all duration-300 ease-in-out ${showSections ? 'max-h-40' : 'max-h-0'}`}
           >
             {[
               ['1', 'KR', 'https://coloso.co.kr'],
@@ -71,9 +73,10 @@ export default function Home() {
         <p className='pt-28 pb-4 flex items-center text-center 
           font-marydale  
           uppercase 
-          text-3xl
+          text-4xl
           md:text-5xl 
-          font-bold'>
+          font-black
+          md:font-bold'>
           I post things.
         </p>
         <div className="font-marydale flex gap-8 justify-center text-base md:text-xl text-center items-center w-full">
