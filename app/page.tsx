@@ -18,7 +18,7 @@ export default function Home() {
           md:font-bold'>
           A Blank Canvas.
         </a>
-        <div className="flex flex-col items-center pt-3 md:pt-8 px-6 w-full">
+        <div className="flex flex-col items-center pt-8 px-6 w-full">
           <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-96" />
           {/* <p className="font-marydale text-xl md:text-4xl font-bold ">Hi {':)'}</p> */}
         </div>
@@ -33,10 +33,9 @@ export default function Home() {
         <p className='pt-20 flex items-center text-center 
           font-marydale  
           uppercase 
-          text-4xl
+          text-3xl
           md:text-5xl 
-          font-black
-          md:font-bold'>
+          font-bold'>
           I made this.
         </p>
         <div className="pt-4 flex flex-col justify-center text-xl w-full">
@@ -73,10 +72,9 @@ export default function Home() {
         <p className='pt-28 pb-4 flex items-center text-center 
           font-marydale  
           uppercase 
-          text-4xl
+          text-3xl
           md:text-5xl 
-          font-black
-          md:font-bold'>
+          font-bold'>
           I post things.
         </p>
         <div className="font-marydale flex gap-8 justify-center text-base md:text-xl text-center items-center w-full">
