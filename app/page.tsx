@@ -35,7 +35,7 @@ export default function Home() {
           text-3xl
           md:text-5xl 
           font-bold'>
-          I made these.
+          I made this.
         </p>
         <div className="pt-4 flex flex-col justify-center text-xl w-full">
           <div className="max-w-full rounded-3xl overflow-hidden border border-black flex max-h-40 cursor-pointer"
