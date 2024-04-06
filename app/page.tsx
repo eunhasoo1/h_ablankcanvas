@@ -58,7 +58,7 @@ export default function Home() {
               <a
                 key={key}
                 href={url}
-                className=" bg-background border-[1px] border-black py-1 md:py-2 pt-2 md:pt-4 rounded-b-3xl h-full flex items-center justify-center transition-transform duration-500 ease-in-out transform"
+                className=" bg-background border-[1px] border-black py-1 md:py-2 pt-2 md:pt-4 rounded-b-3xl h-10 flex items-center justify-center transition-transform duration-500 ease-in-out transform"
                 style={{
                   // This will apply a translateY transformation based on the visibility state
                   transform: showSections ? 'translateY(-20%)' : 'translateY(-100%)',
