@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="font-helvetica w-full flex flex-col items-center bg-background min-h-screen justify-between overflow-clip">
       <div className="max-w-4xl flex flex-col items-center w-full  px-5 ">
-        <a href='/' className='pt-20 flex items-center text-center 
+        <a href='/' className='mt-20 flex items-center text-center 
           font-marydale  
           uppercase 
           text-4xl
@@ -19,7 +19,7 @@ export default function Home() {
           A Blank Canvas.
         </a>
         <div className="flex flex-col items-center pt-8 px-6 w-full">
-          <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-96" />
+          <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-60 md:max-w-96" />
           {/* <p className="font-marydale text-xl md:text-4xl font-bold ">Hi {':)'}</p> */}
         </div>
         {/* <p className='pt-16 pb-4 flex text-center
@@ -30,7 +30,7 @@ export default function Home() {
           font-bold'>
           Links to stuffs
         </p> */}
-        <p className='pt-20 flex items-center text-center 
+        <p className='mt-20 flex items-center text-center 
           font-marydale  
           uppercase 
           text-3xl
@@ -69,7 +69,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <p className='pt-28 pb-4 flex items-center text-center 
+        <p className='mt-28 pb-4 flex items-center text-center 
           font-marydale  
           uppercase 
           text-3xl
