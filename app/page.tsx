@@ -100,7 +100,7 @@ export default function Home() {
             ))}
           </div>
         </div> */}
-        <p className='mt-28 pb-4 flex items-center text-center 
+        <p className='mt-24 pb-4 flex items-center text-center 
           font-marydale  
           uppercase 
           text-3xl
