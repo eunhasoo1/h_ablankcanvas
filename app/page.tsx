@@ -20,7 +20,7 @@ export default function Home() {
         {/* <p className="mt-12 font-john text-center text-xs md:text-sm text-black pb-4 w-full ">
         A Blank Canvas.
         </p> */}
-        <div className="flex flex-col items-center pt-4 px-6 w-full">
+        <div className="flex flex-col items-center pt-8 px-6 pl-20 md:pl-56 w-full">
           <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-48 md:max-w-72" />
           {/* <p className="font-marydale text-xl md:text-4xl font-bold ">Hi {':)'}</p> */}
         </div>
@@ -32,15 +32,15 @@ export default function Home() {
           font-bold'>
           Links to stuffs
         </p> */}
-        <p className='mt-20 flex items-center text-center 
+        {/* <p className='mt-20 flex items-center text-center 
           font-marydale  
           uppercase 
           text-3xl
           md:text-5xl 
           font-bold'>
           I made these.
-        </p>
-        <div className="pt-4 flex flex-col justify-center text-xl w-full">
+        </p> */}
+        <div className="pt-10 md:pt-16 pr-16 md:pr-60 flex flex-col justify-center text-xl w-full">
           {/* <div className="max-w-full rounded-3xl overflow-hidden border z-10  border-black flex max-h-40 cursor-pointer"
             onClick={() => setShowSections(!showSections)}>
             <div className="bg-background p-3 px-4 w-1/2 flex flex-col justify-between">
@@ -71,11 +71,11 @@ export default function Home() {
             ))}
           </div> */}
           {/* coloso polaroid */}
-          <div className="flex flex-col items-center justify-between px-6 w-full"
+          <div className="flex flex-col items-center justify-between w-full"
             >
             <img src="/image/colosopolaroid.png" alt="colosopolaroid" className="flex w-full max-w-48 md:max-w-72" />
               {/* <p className="font-marydale text-xl md:text-4xl font-bold mx-auto">Hi {':)'}</p> */}
-              <div className="font-marydale flex flex-row gap-x-6 mx-auto text-base bg-background py-1 md:py-2 pt-3 md:pt-4 rounded-b-3xl items-center justify-center
+              <div className="font-marydale flex flex-row gap-x-5 pr-2 mx-auto text-base bg-background py-1 md:py-2 pt-3 md:pt-4 rounded-b-3xl items-center justify-center
                 ">
             {[
               ['1', 'EN', 'https://coloso.global/en'],
