@@ -9,17 +9,17 @@ export default function Home() {
   return (
     <div className="font-helvetica w-full flex flex-col items-center min-h-screen justify-between overflow-clip">
       <div className="max-w-4xl flex flex-col items-center w-full  px-5 ">
-        {/* <a href='/' className='mt-10 flex items-center text-center 
+        <a href='/' className='mt-10 md:mt-20 flex items-center text-center 
           font-marydale  
           uppercase 
           text-4xl
-          md:text-6xl
+          md:text-8xl
           font-bold'>
           A Blank Canvas.
-        </a> */}
-        <p className="mt-12 font-john text-center text-xs md:text-sm text-black pb-4 w-full ">
+        </a>
+        {/* <p className="mt-12 font-john text-center text-xs md:text-sm text-black pb-4 w-full ">
         A Blank Canvas.
-        </p>
+        </p> */}
         <div className="flex flex-col items-center pt-4 px-6 w-full">
           <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-48 md:max-w-72" />
           {/* <p className="font-marydale text-xl md:text-4xl font-bold ">Hi {':)'}</p> */}
