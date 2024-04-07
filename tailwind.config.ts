@@ -17,6 +17,7 @@ const config: Config = {
         helvetica: ['Helvetica Neue', 'sans-serif'],
         john: ['John-Doe', 'sans-serif'],
       },
+      
     },
   },
   plugins: [],

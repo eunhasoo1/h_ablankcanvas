@@ -2,10 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  background-color: #edece4; /* Sets the background color for the whole page */
-  margin: 0; /* It's a common practice to reset default margin */
+/* globals.css or styles.css */
+/* globals.css or styles.css */
+html {
+  background-color: #edece4; /* Set the fallback background color */
+  margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
-  /* Other global styles */
+  height: 100%; /* Ensure the html element is at least as tall as the viewport */
 }
+/* 
+body {
+  background-image: url('/image/backgroundImage.png'); 
+  background-repeat: repeat;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+} */
+
+
+

@@ -7,19 +7,21 @@ export default function Home() {
   const [showSections, setShowSections] = useState(false);
 
   return (
-    <div className="font-helvetica w-full flex flex-col items-center bg-background min-h-screen justify-between overflow-clip">
+    <div className="font-helvetica w-full flex flex-col items-center min-h-screen justify-between overflow-clip">
       <div className="max-w-4xl flex flex-col items-center w-full  px-5 ">
-        <a href='/' className='mt-20 flex items-center text-center 
+        {/* <a href='/' className='mt-10 flex items-center text-center 
           font-marydale  
           uppercase 
           text-4xl
-          md:text-8xl 
-          font-black
-          md:font-bold'>
+          md:text-6xl
+          font-bold'>
           A Blank Canvas.
-        </a>
-        <div className="flex flex-col items-center pt-8 px-6 w-full">
-          <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-60 md:max-w-96" />
+        </a> */}
+        <p className="mt-12 font-john text-center text-xs md:text-sm text-black pb-4 w-full ">
+        A Blank Canvas.
+        </p>
+        <div className="flex flex-col items-center pt-4 px-6 w-full">
+          <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-48 md:max-w-72" />
           {/* <p className="font-marydale text-xl md:text-4xl font-bold ">Hi {':)'}</p> */}
         </div>
         {/* <p className='pt-16 pb-4 flex text-center
@@ -36,18 +38,18 @@ export default function Home() {
           text-3xl
           md:text-5xl 
           font-bold'>
-          I made this.
+          I made these.
         </p>
         <div className="pt-4 flex flex-col justify-center text-xl w-full">
-          <div className="max-w-full rounded-3xl overflow-hidden border z-10  border-black flex max-h-40 cursor-pointer"
+          {/* <div className="max-w-full rounded-3xl overflow-hidden border z-10  border-black flex max-h-40 cursor-pointer"
             onClick={() => setShowSections(!showSections)}>
             <div className="bg-background p-3 px-4 w-1/2 flex flex-col justify-between">
               <h2 className="text-xl md:text-2xl ">Coloso</h2>
               <p className="text-left text-xs md:text-base">{'->'} Let's begin</p>
             </div>
             <img src="/image/coloso.png" alt="Tools" className="w-1/2 object-cover" />
-          </div>
-          <div
+          </div> */}
+          {/* <div
             className="font-marydale grid grid-cols-3 gap-4 px-12 text-base transition-all duration-300 ease-in-out"
           >
             {[
@@ -67,7 +69,58 @@ export default function Home() {
                 {title}
               </a>
             ))}
+          </div> */}
+          {/* coloso polaroid */}
+          <div className="flex flex-col items-center justify-between px-6 w-full"
+            >
+            <img src="/image/colosopolaroid.png" alt="colosopolaroid" className="flex w-full max-w-48 md:max-w-72" />
+              {/* <p className="font-marydale text-xl md:text-4xl font-bold mx-auto">Hi {':)'}</p> */}
+              <div className="font-marydale flex flex-row gap-x-6 mx-auto text-base bg-background py-1 md:py-2 pt-3 md:pt-4 rounded-b-3xl items-center justify-center
+                ">
+            {[
+              ['1', 'EN', 'https://coloso.global/en'],
+              ['2', 'KR', 'https://coloso.co.kr'],
+              ['3', 'JP', 'https://coloso.jp'],
+              ['4', 'ES', 'https://coloso.global/es'],
+            ].map(([key, title, url]) => (
+              <a
+                key={key}
+                href={url}
+                aria-hidden={!showSections}
+              >
+                {title}
+              </a>
+            ))}
           </div>
+          </div>
+
+          {/* image with border */}
+           {/* <div className="max-w-full rounded-3xl overflow-hidden border-[1px] z-10  border-black flex max-h-40 cursor-pointer"
+            onClick={() => setShowSections(!showSections)}>
+            <div className="bg-background p-3 px-4 w-1/2 flex flex-col justify-between">
+              <h2 className="text-xl md:text-2xl ">Coloso</h2>
+              <p className="text-left text-xs md:text-base">{'->'} Let's begin</p>
+            </div>
+            <img src="/image/coloso.png" alt="Tools" className="w-1/2 object-cover" />
+          </div>
+          <div className="font-marydale grid grid-cols-3 gap-4 px-12 text-base transition-opacity duration-500 ease-in-out">
+            {[
+              ['1', 'KR', 'https://coloso.co.kr'],
+              ['2', 'EN', 'https://coloso.global/en'],
+              ['3', 'JP', 'https://coloso.jp'],
+            ].map(([key, title, url]) => (
+              <a
+                key={key}
+                href={url}
+                className={`bg-background py-1 md:py-2 pt-2 md:pt-4 rounded-b-3xl h-10 flex items-center justify-center transition-opacity duration-300 ease-in-out ${
+                  showSections ? 'opacity-100' : 'opacity-0'
+                }`}
+                aria-hidden={!showSections}
+              >
+                {title}
+              </a>
+            ))}
+          </div> */}
         </div>
         {/* <div className="pt-4 flex flex-col justify-center text-xl w-full">
           <div className="max-w-full rounded-3xl overflow-hidden border z-10  border-black flex max-h-40 cursor-pointer"
@@ -106,9 +159,9 @@ export default function Home() {
           text-3xl
           md:text-5xl 
           font-bold'>
-          I post things.
+          I post stuffs.
         </p>
-        <div className="font-marydale flex gap-8 justify-center text-base md:text-xl text-center items-center w-full">
+        <div className="font-marydale flex gap-8 justify-center text-lg md:text-xl text-center items-center w-full">
           { [
             ['3', 'Youtube', 'https://youtube.com/@h_ablankcanvas', undefined],
             ['1', 'Instagram', 'https://www.instagram.com/h_ablankcanvas/', undefined],
