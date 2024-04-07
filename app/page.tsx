@@ -153,13 +153,13 @@ export default function Home() {
             ))}
           </div>
         </div> */}
-        <p className='mt-24 pb-4 flex items-center text-center 
+        <p className='mt-16 md:mt-24 pb-4 flex items-center text-center 
           font-marydale  
           uppercase 
           text-3xl
           md:text-5xl 
           font-bold'>
-          I post stuffs.
+          I post stuff.
         </p>
         <div className="font-marydale flex gap-8 justify-center text-lg text-center items-center w-full">
           { [
