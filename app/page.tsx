@@ -161,7 +161,7 @@ export default function Home() {
           font-bold'>
           I post stuffs.
         </p>
-        <div className="font-marydale flex gap-8 justify-center text-lg md:text-xl text-center items-center w-full">
+        <div className="font-marydale flex gap-8 justify-center text-lg text-center items-center w-full">
           { [
             ['3', 'Youtube', 'https://youtube.com/@h_ablankcanvas', undefined],
             ['1', 'Instagram', 'https://www.instagram.com/h_ablankcanvas/', undefined],
@@ -169,7 +169,7 @@ export default function Home() {
             ['2', undefined, 'https://www.x.com/h_ablankcanvas/', '/image/twitter.png'],
           ].map(([key, title, url, imgSrc]) => (
             <a key={key} href={url ?? ""} className="bg-background rounded-full flex items-center">
-              {imgSrc ? <img src={imgSrc} className=" h-full object-cover flex max-h-6" /> : title}
+              {imgSrc ? <img src={imgSrc} className=" h-full object-cover flex max-h-5" /> : title}
             </a>
           ))}
         </div>
