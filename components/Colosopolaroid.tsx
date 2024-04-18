@@ -1,5 +1,3 @@
-// ColosoPolaroid.js
-
 import React from 'react';
 
 const ColosoPolaroid = () => {

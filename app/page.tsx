@@ -1,8 +1,10 @@
 
 "use client"
 
-import ColosoPolaroid from '@/components/Colosopolaroid';
 import React, { useState } from 'react';
+import colosopolaroid from '@/components/ColosoPolaroid';
+import ColosoPolaroid from '@/components/ColosoPolaroid';
+import Meaning from '@/components/meaning';
 
 export default function Home() {
   const [showSections, setShowSections] = useState(false);
@@ -18,6 +20,7 @@ export default function Home() {
           font-bold'>
           A Blank Canvas.
         </a>
+
         {/* colosopolaroid on */}
         {/* <div className="flex flex-col items-center pt-8 px-6 pl-20 md:pl-56 w-full"> */}
         {/* colosopolaroid off */}
@@ -119,9 +122,13 @@ export default function Home() {
         </div>
 
         </div>
-        <p className="mt-40 pt-8 font-john text-center text-xs md:text-sm text-black pb-16 w-full ">
+        <div>
+        <Meaning />
+
+        <p className="pt-2 font-john text-center text-xs md:text-sm text-black w-full pb-16 ">
           One story at a time
         </p>
+        </div>
     </div>
   );
 }
