@@ -2,12 +2,11 @@
 "use client"
 
 import React, { useState } from 'react';
-import colosopolaroid from '@/components/ColosoPolaroid';
-import ColosoPolaroid from '@/components/ColosoPolaroid';
 import Meaning from '@/components/Meaning';
+// import ColosoPolaroid from '@/components/ColosoPolaroid';
 
 export default function Home() {
-  const [showSections, setShowSections] = useState(false);
+  // const [showSections, setShowSections] = useState(false);
 
   return (
     <div className="font-helvetica w-full flex flex-col items-center min-h-screen justify-between overflow-clip">
