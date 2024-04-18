@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import colosopolaroid from '@/components/ColosoPolaroid';
 import ColosoPolaroid from '@/components/ColosoPolaroid';
-import Meaning from '@/components/meaning';
+import Meaning from '@/components/Meaning';
 
 export default function Home() {
   const [showSections, setShowSections] = useState(false);
