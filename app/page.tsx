@@ -107,7 +107,7 @@ export default function Home() {
           font-bold'>
           I post stuff.
         </p>
-        <div className="font-marydale flex gap-8 justify-center text-lg text-center items-center w-full">
+        <div className="font-marydale flex gap-6 justify-center text-lg text-center items-center w-full">
           { [
             // ['3', 'Youtube', 'https://youtube.com/@h_ablankcanvas', undefined],
             ['1', 'Instagram', 'https://www.instagram.com/h_ablankcanvas/', undefined],

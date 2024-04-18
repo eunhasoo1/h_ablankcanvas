@@ -18,6 +18,7 @@ const config: Config = {
         john: ['John-Doe', 'sans-serif'],
       },
       fontSize: {
+        xxxs: '0.4rem',
         xxs: '0.5rem'
       }
     },
