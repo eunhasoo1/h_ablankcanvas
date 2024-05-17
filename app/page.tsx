@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react';
 import Meaning from '@/components/Meaning';
-import ColosoPolaroid from '@/components/ColosoPolaroid';
 import ColosoTicket from '@/components/ColosoTicket';
 import ColosoPin from '@/components/ColosoPin';
 // import ColosoPolaroid from '@/components/ColosoPolaroid';
