@@ -3,6 +3,9 @@
 
 import React, { useState } from 'react';
 import Meaning from '@/components/Meaning';
+import ColosoPolaroid from '@/components/ColosoPolaroid';
+import ColosoTicket from '@/components/ColosoTicket';
+import ColosoPin from '@/components/ColosoPin';
 // import ColosoPolaroid from '@/components/ColosoPolaroid';
 
 export default function Home() {
@@ -25,6 +28,8 @@ export default function Home() {
         {/* colosopolaroid off */}
         <div className="flex flex-col items-center pt-8 px-6 w-full">
           <img src="/image/profile.png" alt="Haeun's Profile" className="flex w-full max-w-48 md:max-w-72" />
+          {/* <ColosoTicket /> */}
+          <ColosoPin />
         </div>
         {/* <p className='mt-20 flex items-center text-center 
           font-marydale  

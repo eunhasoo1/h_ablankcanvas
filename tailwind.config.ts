@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#edece4', // custom background color
+        background: '#edece5', // custom background color
       },
       fontFamily: {
         marydale: ['marydale', 'sans-serif'],
