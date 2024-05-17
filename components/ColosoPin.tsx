@@ -19,7 +19,7 @@ const ColosoPin = () => {
             className='border-black border-[1px] rounded-full items-center flex pl-4'
           >
             📌 {title}
-            <img src="/image/colosologo.png" alt="colosopolaroid" className="flex w-full max-w-12 rounded-full ml-3" />
+            <img key={key} src="/image/colosologo.png" alt="colosopolaroid" className="flex w-full max-w-12 rounded-full ml-3" />
           </a>
           
         </div>
