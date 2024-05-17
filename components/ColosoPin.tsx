@@ -10,16 +10,15 @@ const ColosoPin = () => {
           // ['3', 'JP', 'https://coloso.jp'],
           // ['4', 'Coloso Course - Español', 'https://coloso.global/es'],
         ].map(([key, title, url]) => (
-        <div className='flex flex-row gap-x-2'>
+        <div key={key} className='flex flex-row gap-x-2'>
           <a
-            key={key}
             href={url}
             target="_blank"
             // aria-hidden={!showSections}
             className='border-black border-[1px] rounded-full items-center flex pl-4'
           >
             📌 {title}
-            <img key={key} src="/image/colosologo.png" alt="colosopolaroid" className="flex w-full max-w-12 rounded-full ml-3" />
+            <img src="/image/colosologo.png" alt="colosopolaroid" className="flex w-full max-w-12 rounded-full ml-3" />
           </a>
           
         </div>
