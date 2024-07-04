@@ -8,7 +8,6 @@ import ColosoPin from '@/components/ColosoPin';
 // import ColosoPolaroid from '@/components/ColosoPolaroid';
 
 export default function Home() {
-  // const [showSections, setShowSections] = useState(false);
 
   return (
     <div className="font-helvetica w-full flex flex-col items-center min-h-screen justify-between overflow-clip">
@@ -43,33 +42,6 @@ export default function Home() {
           {/* coloso polaroid */}
           {/* <ColosoPolaroid /> */}
 
-          {/* image with border */}
-           {/* <div className="max-w-full rounded-3xl overflow-hidden border-[1px] z-10  border-black flex max-h-40 cursor-pointer"
-            onClick={() => setShowSections(!showSections)}>
-            <div className="bg-background p-3 px-4 w-1/2 flex flex-col justify-between">
-              <h2 className="text-xl md:text-2xl ">Coloso</h2>
-              <p className="text-left text-xs md:text-base">{'->'} Let's begin</p>
-            </div>
-            <img src="/image/coloso.png" alt="Tools" className="w-1/2 object-cover" />
-          </div>
-          <div className="font-marydale grid grid-cols-3 gap-4 px-12 text-base transition-opacity duration-500 ease-in-out">
-            {[
-              ['1', 'KR', 'https://coloso.co.kr'],
-              ['2', 'EN', 'https://coloso.global/en'],
-              ['3', 'JP', 'https://coloso.jp'],
-            ].map(([key, title, url]) => (
-              <a
-                key={key}
-                href={url}
-                className={`bg-background py-1 md:py-2 pt-2 md:pt-4 rounded-b-3xl h-10 flex items-center justify-center transition-opacity duration-300 ease-in-out ${
-                  showSections ? 'opacity-100' : 'opacity-0'
-                }`}
-                aria-hidden={!showSections}
-              >
-                {title}
-              </a>
-            ))}
-          </div> */}
         </div>
         {/* <div className="pt-4 flex flex-col justify-center text-xl w-full">
           <div className="max-w-full rounded-3xl overflow-hidden border z-10  border-black flex max-h-40 cursor-pointer"
