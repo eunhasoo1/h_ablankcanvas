@@ -28,7 +28,7 @@ export default function Home() {
               <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-5 md:px-6 font-helvetica justify-between font-medium">
                 <h2 className="text-md md:text-xl">Coloso Course</h2>
                 <p className="text-2xl md:text-4xl leading-6">
-                  Your Characters,<br />brought to life.
+                  Your characters,<br />brought to life.
                 </p>
               </div>
             </div>
