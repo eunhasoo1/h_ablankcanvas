@@ -5,7 +5,7 @@
 /* globals.css or styles.css */
 /* globals.css or styles.css */
 html {
-  background-color: #edece4; /* Set the fallback background color */
+  background-color: #ffffff; /* Set the fallback background color */
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
   height: 100%; /* Ensure the html element is at least as tall as the viewport */
