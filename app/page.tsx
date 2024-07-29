@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="font-helvetica w-full flex flex-col items-center min-h-screen justify-between overflow-clip">
+    <div className="font-helvetica w-full flex flex-col items-center h-dvh justify-between ">
       <div className="flex flex-col items-center w-full px-5">
         <a href='/ablankcanvas' className='mt-10 md:mt-20 flex items-center text-center 
           font-marydale  
@@ -17,7 +17,7 @@ export default function Home() {
           A Blank Canvas
         </a>
 
-        <div className="flex flex-col items-center py-24 px-12 w-full">
+        <div className="flex flex-col items-center py-12 md:py-24 px-12 w-full">
           <Link href="/products/coloso">
             <div className="relative flex flex-col items-center">
               <img
