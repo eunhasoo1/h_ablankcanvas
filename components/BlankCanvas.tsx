@@ -1,24 +1,25 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Moon, Sun } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface Point {
   x: number;
   y: number;
-  pressure: number;
 }
 
 interface Line {
   points: Point[];
   alpha: number;
+  createdAt: number;
 }
 
 const BlankCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const lines = useRef<Line[]>([]);
   const currentLine = useRef<Point[]>([]);
   const router = useRouter();
@@ -28,8 +29,10 @@ const BlankCanvas: React.FC = () => {
     if (!canvas) return;
     
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth * 2;
+      canvas.height = window.innerHeight * 2;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
     };
 
     resizeCanvas();
@@ -38,12 +41,14 @@ const BlankCanvas: React.FC = () => {
     const context = canvas.getContext('2d');
     if (!context) return;
     
+    context.scale(2, 2);
     context.lineCap = 'round';
     context.lineJoin = 'round';
     contextRef.current = context;
 
     const animate = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = isDarkMode ? '#1a1a1a' : '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
       
       // Draw current line
       if (isDrawing && currentLine.current.length > 1) {
@@ -51,10 +56,13 @@ const BlankCanvas: React.FC = () => {
       }
       
       // Draw and fade completed lines
+      const currentTime = Date.now();
       lines.current.forEach((line, lineIndex) => {
+        const timeSinceCreation = currentTime - line.createdAt;
+        if (timeSinceCreation > 300) {
+          line.alpha -= 0.005;
+        }
         drawLine(context, line.points, line.alpha);
-        
-        line.alpha -= 0.005; // Decrease alpha
         
         // Remove line if it's completely faded
         if (line.alpha <= 0) {
@@ -70,7 +78,7 @@ const BlankCanvas: React.FC = () => {
     return () => {
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [isDrawing]);
+  }, [isDrawing, isDarkMode]);
 
   const drawLine = (context: CanvasRenderingContext2D, points: Point[], alpha: number) => {
     if (points.length < 2) return;
@@ -78,82 +86,102 @@ const BlankCanvas: React.FC = () => {
     context.beginPath();
     context.moveTo(points[0].x, points[0].y);
 
-    // 디바이스 화면 크기에 따라 선 두께 조절
-    const screenWidth = window.innerWidth;
-    const isMobile = screenWidth <= 768; // 768px 이하를 모바일로 간주
-    const maxWidth = isMobile ? 15 : 30; // 모바일에서는 최대 두께를 15로 설정
-    const minWidth = isMobile ? 0.5 : 1; // 모바일에서는 최소 두께를 0.5로 설정
+    const isMobile = window.innerWidth <= 768;
+    const lineWidth = isMobile ? 4 : 6;
 
-    for (let i = 1; i < points.length; i++) {
-      const xc = (points[i].x + points[i - 1].x) / 2;
-      const yc = (points[i].y + points[i - 1].y) / 2;
-      
-      const lineProgress = i / (points.length - 1);
-      
-      const easing = (t: number) => {
-        return 0.5 - 0.5 * Math.cos(Math.PI * Math.pow(t, 0.6));
-      };
-      
-      const width = (maxWidth - minWidth) * points[i].pressure * easing(lineProgress) + minWidth;
-      
-      context.lineWidth = width;
-      context.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+    context.lineWidth = lineWidth;
+
+    for (let i = 1; i < points.length - 2; i++) {
+      const xc = (points[i].x + points[i + 1].x) / 2;
+      const yc = (points[i].y + points[i + 1].y) / 2;
+      context.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
     }
 
-    context.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    if (points.length > 2) {
+      const last = points.length - 1;
+      context.quadraticCurveTo(
+        points[last - 1].x,
+        points[last - 1].y,
+        points[last].x,
+        points[last].y
+      );
+    }
 
-    context.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+    const lineColor = isDarkMode ? 'rgb(255, 255, 255)' : 'rgb(26, 26, 26)';
+    
+    // Line effect
+    context.strokeStyle = `rgba(${lineColor.match(/\d+/g)?.join(', ')}, ${alpha})`;
+    context.shadowColor = lineColor;
+    context.shadowBlur = isDarkMode ? 10 : 0;
     context.stroke();
+
+    // Glow effect
+    context.strokeStyle = `rgba(${lineColor.match(/\d+/g)?.join(', ')}, ${alpha * 0.5})`;
+    context.lineWidth = lineWidth + (isDarkMode ? 4 : 2);
+    context.stroke();
+
+    // Reset shadow
+    context.shadowColor = 'transparent';
+    context.shadowBlur = 0;
   };
 
   const startDrawing = (e: React.TouchEvent | React.MouseEvent) => {
     setIsDrawing(true);
-    const { clientX, clientY, pressure } = getEventCoordinates(e);
-    currentLine.current = [{ x: clientX, y: clientY, pressure }];
+    const { clientX, clientY } = getEventCoordinates(e);
+    currentLine.current = [{ x: clientX, y: clientY }];
   };
 
   const draw = (e: React.TouchEvent | React.MouseEvent) => {
     if (!isDrawing) return;
-    const { clientX, clientY, pressure } = getEventCoordinates(e);
-    currentLine.current.push({ x: clientX, y: clientY, pressure });
+    const { clientX, clientY } = getEventCoordinates(e);
+    currentLine.current.push({ x: clientX, y: clientY });
   };
 
   const stopDrawing = () => {
     setIsDrawing(false);
     if (currentLine.current.length > 1) {
-      lines.current.push({ points: [...currentLine.current], alpha: 1 });
+      lines.current.push({ 
+        points: [...currentLine.current], 
+        alpha: 1,
+        createdAt: Date.now()
+      });
       currentLine.current = [];
     }
   };
 
-  const getEventCoordinates = (e: React.TouchEvent | React.MouseEvent): { clientX: number; clientY: number; pressure: number } => {
+  const getEventCoordinates = (e: React.TouchEvent | React.MouseEvent): { clientX: number; clientY: number } => {
+    let clientX, clientY;
     if ('touches' in e) {
-      const touch = e.touches[0];
-      return {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        pressure: (touch as any).force !== undefined ? (touch as any).force : 0.5,
-      };
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
     } else {
-      return {
-        clientX: e.clientX,
-        clientY: e.clientY,
-        pressure: (e as any).pressure !== undefined ? (e as any).pressure : 0.5,
-      };
+      clientX = e.clientX;
+      clientY = e.clientY;
     }
+    return { clientX, clientY };
   };
 
   const goHome = () => {
     router.push('/');
   };
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
-    <div className="relative w-full h-dvh bg-background touch-none">
+    <div className={`relative w-full h-dvh ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} touch-none`}>
       <button 
         onClick={goHome}
-        className="absolute top-4 left-4 p-2 z-10"
+        className={`absolute top-4 left-4 p-2 z-10 ${isDarkMode ? 'text-white' : 'text-black'}`}
       >
         <ArrowLeft size={24} />
+      </button>
+      <button 
+        onClick={toggleTheme}
+        className={`absolute top-4 right-4 p-2 z-10 ${isDarkMode ? 'text-white' : 'text-black'}`}
+      >
+        {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
       </button>
       <canvas
         ref={canvasRef}
@@ -164,7 +192,7 @@ const BlankCanvas: React.FC = () => {
         onTouchStart={startDrawing}
         onTouchMove={draw}
         onTouchEnd={stopDrawing}
-        className="w-full h-full bg-background cursor-crosshair"
+        className="w-full h-full cursor-crosshair"
       />
     </div>
   );
