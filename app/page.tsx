@@ -3,6 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -17,19 +18,22 @@ export default function Home() {
           A Blank Canvas
         </a>
 
-        <div className="flex flex-col items-center py-12 md:py-24 px-12 w-full">
+        <div className="flex flex-col items-center py-12 md:py-24 px-10 w-full">
           <Link href="/products/coloso">
-            <div className="relative flex flex-col items-center">
+            <div className="relative flex flex-col items-center group">
               <img
                 src="/image/coloso.png"
                 alt="Coloso Course"
                 className="flex w-full max-w-96 cursor-pointer rounded-3xl"
               />
-              <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-5 md:px-6 font-helvetica justify-between font-medium">
+              <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-4 md:px-5 pr-3 md:pr-4 font-helvetica justify-between font-medium">
                 <h2 className="text-md md:text-xl">Coloso Course</h2>
-                <p className="text-2xl md:text-4xl leading-6">
-                  Your characters,<br />brought to life.
-                </p>
+                <div className="flex items-end justify-between">
+                  <p className="text-2xl md:text-4xl leading-6">
+                    Your characters,<br />brought to life.
+                  </p>
+                  <ArrowRight className="w-6 h-6 md:w-8 md:h-8" />
+                </div>
               </div>
             </div>
           </Link>
@@ -39,7 +43,7 @@ export default function Home() {
           { [
             // ['3', 'Youtube', 'https://youtube.com/@h_ablankcanvas', undefined],
             ['1', 'Instagram', 'https://www.instagram.com/h_ablankcanvas/', undefined],
-            ['2', 'Twitter', 'https://www.x.com/h_ablankcanvas/', undefined],
+            // ['2', 'Twitter', 'https://www.x.com/h_ablankcanvas/', undefined],
             // ['2', undefined, 'https://www.x.com/h_ablankcanvas/', '/image/twitter.png'],
           ].map(([key, title, url, imgSrc]) => (
             <a key={key} href={url ?? ""} target="_blank" className="bg-background rounded-full flex items-center">
