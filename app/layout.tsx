@@ -13,9 +13,9 @@ export const metadata: Metadata = {
     description: "Haeun's website",
     images: [
       {
-        url: "/image/websiteshare.png",
-        width: 2400,
-        height: 1260,
+        url: "https://ablankcanvas.vercel.app/image/banner.png",
+        width: 1200,
+        height: 630,
         alt: "A Blank Canvas",
       },
     ],
