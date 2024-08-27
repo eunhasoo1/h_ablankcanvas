@@ -8,6 +8,19 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "A Blank Canvas",
   description: "Haeun's website",
+  openGraph: {
+    title: "A Blank Canvas",
+    description: "Haeun's website",
+    images: [
+      {
+        url: "/image/websiteshare.png",
+        width: 2400,
+        height: 1260,
+        alt: "A Blank Canvas",
+      },
+    ],
+    type: "website",
+  },
 };
 
 export default function RootLayout({

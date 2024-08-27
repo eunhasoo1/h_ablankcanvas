@@ -48,22 +48,35 @@ const ColosoProductPage = () => {
             <div className="grid grid-cols-2 gap-x-4 gap-y-6 text-xl pt-0 pb-8 md:pt-12 md:pb-12">
               {languages.map((item, index) => (
                 <div key={index} className="h-full">
-                  <Link href={item.available ? item.url : '#'} passHref>
+                  {item.available ? (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      <div
+                        className={`
+                          border-[1px] border-black
+                          ${selectedLang === item.lang ? 'border-red-500' : ''}
+                          rounded-3xl py-16 text-center cursor-pointer
+                          hover:bg-gray-100
+                          transition duration-300 flex items-center justify-center h-full flex-col
+                          text-black
+                        `}
+                        onClick={() => setSelectedLang(item.lang)}
+                      >
+                        {item.lang}
+                      </div>
+                    </a>
+                  ) : (
                     <div
                       className={`
-                        ${item.available ? 'border-[1px]' : 'border-[1px] border-dashed'}
-                        ${selectedLang === item.lang ? 'border-red-500' : item.available ? 'border-black' : 'border-gray-400'}
-                        rounded-3xl py-16 text-center cursor-pointer
-                        ${item.available ? 'hover:bg-gray-100' : 'cursor-not-allowed'}
+                        border-[1px] border-dashed border-gray-400
+                        rounded-3xl py-16 text-center cursor-not-allowed
                         transition duration-300 flex items-center justify-center h-full flex-col
-                        ${item.available ? 'text-black' : 'text-gray-400'}
+                        text-gray-400
                       `}
-                      onClick={() => item.available && setSelectedLang(item.lang)}
                     >
                       {item.lang}
-                      {!item.available && <span className="ml-2 text-sm">(Coming Soon)</span>}
+                      <span className="ml-2 text-sm">(Coming Soon)</span>
                     </div>
-                  </Link>
+                  )}
                 </div>
               ))}
             </div>
