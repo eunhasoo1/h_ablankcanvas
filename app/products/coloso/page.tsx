@@ -11,7 +11,7 @@ const ColosoProductPage = () => {
   const router = useRouter();
 
   const languages = [
-    { lang: '한국어', url: 'https://bit.ly/3V2Ds4i', available: true },
+    { lang: '한국어', url: 'https://bit.ly/4dDyZvR', available: true },
     { lang: 'Global', url: 'https://coloso.global/en', available: false },
     // { lang: 'English', url: 'https://coloso.global/en', available: false },
     // { lang: 'Japanese', url: 'https://coloso.jp', available: false },

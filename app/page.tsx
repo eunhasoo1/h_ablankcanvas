@@ -46,7 +46,7 @@ export default function Home() {
             // ['2', 'Twitter', 'https://www.x.com/h_ablankcanvas/', undefined],
             // ['2', undefined, 'https://www.x.com/h_ablankcanvas/', '/image/twitter.png'],
           ].map(([key, title, url, imgSrc]) => (
-            <a key={key} href={url ?? ""} target="_blank" className="bg-background rounded-full flex items-center">
+            <a key={key} href={url ?? ""} target="_blank" className="bg-background flex items-center">
               {imgSrc ? <img src={imgSrc} className=" h-full object-cover flex max-h-5" /> : title}
             </a>
           ))}
