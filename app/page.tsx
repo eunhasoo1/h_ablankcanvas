@@ -57,6 +57,7 @@ export default function Home() {
               </div>
             </Link> */}
         </div>
+        
         {/* //og social */}
         <div className="font-marydale flex gap-8 pt-20 pb-40 justify-center text-center items-center w-full text-lg sm:text-2xl font-normal ">
           { [
