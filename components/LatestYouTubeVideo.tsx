@@ -39,7 +39,7 @@ export default function LatestYouTubeVideo({ channelId }: LatestYouTubeVideoProp
   if (loading) {
     return (
       <div className="w-full max-w-5xl mx-auto mt-8">
-        <div className="aspect-video bg-gray-100 animate-pulse rounded-lg"></div>
+        <div className="aspect-video bg-gray-100 animate-pulse rounded-3xl"></div>
       </div>
     );
   }
@@ -56,13 +56,13 @@ export default function LatestYouTubeVideo({ channelId }: LatestYouTubeVideoProp
 
   return (
     <div className="w-full max-w-5xl mx-auto ">
-      <p className='mt-10 sm:mt-16 flex items-center text-center 
+      <p className='mt-10 sm:mt-16 pl-2 flex items-center text-center 
           font-marydale text-lg sm:text-2xl'>
           Latest
       </p>
-      <div className="aspect-video mt-2">
+      <div className="aspect-video mt-1">
         <iframe
-          className="w-full h-full rounded-2xl"
+          className="w-full h-full rounded-3xl"
           src={`https://www.youtube.com/embed/${video.videoId}`}
           title={video.title}
           frameBorder="0"

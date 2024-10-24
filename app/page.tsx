@@ -38,16 +38,17 @@ export default function Home() {
         </a> */}
         <LatestYouTubeVideo channelId={process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!} />
         <div className="flex flex-col items-center w-full gap-y-4 sm:gap-y-6">
-        <p className='py-10 md:py-12 mt-8 flex items-center text-center 
+        {/* <p className='py-10 md:py-12 mt-8 flex items-center text-center 
           font-marydale  
           uppercase 
-          text-4xl sm:text-5xl
+          text-3xl sm:text-5xl
           font-bold 
           '>
           I made stuff
-        </p>
+        </p> */}
           {/* <Link href="/products/coloso"> */}
-          <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer">
+          <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer" className='mt-10 sm:mt-20'>
+            {/* <div className="relative flex flex-col items-center group"> */}
             <div className="relative flex flex-col items-center group">
               <img
                 src="/image/coloso.png"
