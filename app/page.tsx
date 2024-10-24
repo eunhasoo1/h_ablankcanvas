@@ -37,7 +37,6 @@ export default function Home() {
           A Blank Canvas
         </a> */}
         <LatestYouTubeVideo channelId={process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!} />
-        
         <div className="flex flex-col items-center w-full gap-y-4 sm:gap-y-6">
         <p className='py-10 md:py-12 mt-8 flex items-center text-center 
           font-marydale  
