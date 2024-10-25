@@ -38,8 +38,12 @@ export default function LatestYouTubeVideo({ channelId }: LatestYouTubeVideoProp
 
   if (loading) {
     return (
-      <div className="w-full max-w-5xl mx-auto mt-8">
-        <div className="aspect-video bg-gray-100 animate-pulse rounded-3xl"></div>
+      <div className="w-full max-w-5xl mx-auto">
+         <p className='mt-10 sm:mt-16 pl-2 flex items-center text-center 
+          font-marydale text-lg sm:text-2xl'>
+          Latest
+      </p>
+        <div className="aspect-video bg-gray-100 animate-pulse rounded-3xl mt-1"></div>
       </div>
     );
   }
@@ -55,23 +59,32 @@ export default function LatestYouTubeVideo({ channelId }: LatestYouTubeVideoProp
   if (!video) return null;
 
   return (
-    <div className="w-full max-w-5xl mx-auto ">
+    <div className="w-full max-w-5xl mx-auto">
       <p className='mt-10 sm:mt-16 pl-2 flex items-center text-center 
           font-marydale text-lg sm:text-2xl'>
           Latest
       </p>
-      <div className="aspect-video mt-1">
-        <iframe
-          className="w-full h-full rounded-3xl"
-          src={`https://www.youtube.com/embed/${video.videoId}`}
-          title={video.title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-      {/* <h2 className="mt-4 text-xl font-semibold text-gray-800">{video.title}</h2>
-      <p className="mt-2 text-gray-600">{video.publishedAt}</p> */}
+      <a
+        href={`https://www.youtube.com/watch?v=${video.videoId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative block mt-1"
+      >
+        <div className="aspect-video relative overflow-hidden rounded-3xl">
+          <img
+            src={`https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`}
+            alt={video.title}
+            className="w-full h-full object-cover transform"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img 
+              src="/image/youtubeicon.png" 
+              alt="YouTube Play Button" 
+              className="w-14 h-14 sm:w-20 sm:h-20 transform transition-all duration-300"
+            />
+          </div>
+        </div>
+      </a>
     </div>
   );
 }
