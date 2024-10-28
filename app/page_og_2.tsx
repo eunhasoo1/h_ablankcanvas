@@ -18,8 +18,7 @@ interface SocialMediaItem {
 export default function Home() {
   return (
     <div className="font-helvetica w-full flex flex-col items-center h-dvh justify-between ">
-      <div className="flex flex-col items-center w-full px-5 gap-y-24 sm:gap-y-40">
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col items-center w-full px-5">
         <a href='/ablankcanvas' className='mt-10 md:mt-12 flex items-center text-center 
           font-marydale  
           uppercase 
@@ -38,37 +37,17 @@ export default function Home() {
           A Blank Canvas
         </a> */}
         <LatestYouTubeVideo channelId={process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!} />
-        </div>
         <div className="flex flex-col items-center w-full gap-y-4 sm:gap-y-6">
-        <p className='mb-4 flex items-center text-center 
+        {/* <p className='py-10 md:py-12 mt-8 flex items-center text-center 
           font-marydale  
           uppercase 
-          text-4xl sm:text-5xl
+          text-3xl sm:text-5xl
           font-bold 
           '>
           I made stuff
-        </p>
-          {/* <Link href="https://wakethedead.ai" target="_blank">
-              <div className="relative flex flex-col items-center group">
-                <img
-                  src="/image/wtd.png"
-                  alt="Wake The Dead"
-                  className="flex w-full max-w-96 cursor-pointer rounded-3xl"
-                />
-                <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-4 md:px-5 pr-3 md:pr-4 font-helvetica justify-between font-medium">
-                  <h2 className="text-md md:text-xl font-normal">Wake The Dead (beta) - Free</h2>
-                  <div className="flex items-end justify-between">
-                    <p className="text-3xl md:text-4xl leading-7">
-                    Emoji CPR
-                    <br /> for any content 🚑
-                    </p>
-                    <ArrowRight className="w-8 h-8" />
-                  </div>
-                </div>
-              </div>
-            </Link> */}
+        </p> */}
           {/* <Link href="/products/coloso"> */}
-          <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer" >
+          <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer" className='mt-10 sm:mt-20'>
             {/* <div className="relative flex flex-col items-center group"> */}
             <div className="relative flex flex-col items-center group">
               <img
@@ -87,31 +66,54 @@ export default function Home() {
               </div>
             </div>
           </Link>
-          
+          {/* <Link href="https://wakethedead.vercel.app" target="_blank">
+              <div className="relative flex flex-col items-center group">
+                <img
+                  src="/image/wtd.png"
+                  alt="Wake The Dead"
+                  className="flex w-full max-w-96 cursor-pointer rounded-3xl"
+                />
+                <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-4 md:px-5 pr-3 md:pr-4 font-helvetica justify-between font-medium">
+                  <h2 className="text-md md:text-xl font-normal">Wake The Dead (beta) - Free</h2>
+                  <div className="flex items-end justify-between">
+                    <p className="text-3xl md:text-4xl leading-7">
+                    Emoji CPR
+                    <br /> for any content 🚑
+                    </p>
+                    <ArrowRight className="w-8 h-8" />
+                  </div>
+                </div>
+              </div>
+            </Link> */}
         </div>
-        <div className="flex flex-col justify-center text-center items-center w-full ">
-        <p className='mb-4 flex items-center text-center 
-          font-marydale
-          uppercase 
-          text-4xl
-          md:text-5xl 
-          font-bold'>
-          I post stuff
-        </p>
-        {/* <div className="font-marydale flex gap-8 pt-20 pb-40 mt-12 justify-center text-center items-center w-full text-lg sm:text-2xl font-normal"> */}
-        <div className="font-marydale flex gap-8 pb-40 justify-center text-center items-center w-full text-lg sm:text-2xl font-light">
+        
+        {/* //og social */}
+        {/* <div className="font-marydale flex gap-8 pt-20 pb-40 justify-center text-center items-center w-full text-lg sm:text-2xl font-normal ">
+          { [
+            // ['3', 'Youtube', 'https://youtube.com/@h_ablankcanvas', undefined],
+            ['1', 'Instagram', 'https://www.instagram.com/h_ablankcanvas/', undefined],
+            // ['2', 'Twitter', 'https://www.x.com/h_ablankcanvas/', undefined],
+            // ['2', undefined, 'https://www.x.com/h_ablankcanvas/', '/image/twitter.png'],
+          ].map(([key, title, url, imgSrc]) => (
+            <a key={key} href={url ?? ""} target="_blank" className="bg-background flex items-center">
+              {imgSrc ? <img src={imgSrc} className=" h-full object-cover flex max-h-5" /> : title}
+            </a>
+          ))}
+        </div> */}
+
+        <div className="font-marydale flex gap-8 pt-20 pb-40 mt-12 justify-center text-center items-center w-full text-lg sm:text-2xl font-normal">
           {[
             {
               id: '3',
               title: 'Youtube',
               url: 'https://youtube.com/@h_ablankcanvas',
-              icon: <Youtube size={20} className="mr-2" />
+              icon: <Youtube size={24} className="mr-2" />
             },
             {
               id: '1',
               title: 'Instagram',
               url: 'https://www.instagram.com/h_ablankcanvas/',
-              icon: <Instagram size={20} className="mr-2" />
+              icon: <Instagram size={24} className="mr-2" />
             },
             // {
             //   id: '2',
@@ -132,9 +134,23 @@ export default function Home() {
             </a>
           ))}
         </div>
-        </div>
+
+        {/* <div className="font-helvetica flex gap-2 pt-20 pb-40 justify-center text-center items-center w-full text-lg sm:text-2xl font-normal">
+          { [
+            ['3', 'YouTube', 'https://youtube.com/@h_ablankcanvas', undefined],
+            ['1', 'Instagram', 'https://www.instagram.com/h_ablankcanvas/', undefined],
+            // ['2', 'Twitter', 'https://www.x.com/h_ablankcanvas/', undefined],
+            // ['2', undefined, 'https://www.x.com/h_ablankcanvas/', '/image/twitter.png'],
+          ].map(([key, title, url, imgSrc]) => (
+            <a key={key} href={url ?? ""} target="_blank" className="bg-background flex items-center border-[1px] border-black rounded-full px-3 py-1 sm:px-5 sm:py-1">
+              {imgSrc ? <img src={imgSrc} className=" h-full object-cover flex max-h-5" /> : title}
+            </a>
+          ))}
+        </div> */}
+
         </div>
         <div>
+
         <p className="font-marydale text-center text-black w-full pb-16 ">
           One story at a time.
         </p>

@@ -39,7 +39,7 @@ export default function LatestYouTubeVideo({ channelId }: LatestYouTubeVideoProp
   if (loading) {
     return (
       <div className="w-full max-w-5xl mx-auto">
-         <p className='mt-10 sm:mt-16 pl-2 flex items-center text-center 
+         <p className='mt-8 sm:mt-16 pl-2 flex items-center text-center 
           font-marydale text-lg sm:text-2xl'>
           Latest
       </p>
@@ -60,7 +60,7 @@ export default function LatestYouTubeVideo({ channelId }: LatestYouTubeVideoProp
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <p className='mt-10 sm:mt-16 pl-2 flex items-center text-center 
+      <p className='mt-8 sm:mt-16 pl-2 flex items-center text-center 
           font-marydale text-lg sm:text-2xl'>
           Latest
       </p>
