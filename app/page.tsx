@@ -37,17 +37,17 @@ export default function Home() {
           font-bold'>
           A Blank Canvas
         </a> */}
-        <LatestYouTubeVideo channelId={process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!} />
+        {/* <LatestYouTubeVideo channelId={process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!} /> */}
         </div>
         <div className="flex flex-col items-center w-full gap-y-4 sm:gap-y-6">
-        <p className='mb-4 flex items-center text-center 
+        {/* <p className='mb-4 flex items-center text-center 
           font-marydale  
           uppercase 
           text-4xl sm:text-5xl
           font-bold 
           '>
-          I made stuff
-        </p>
+          I make stuff
+        </p> */}
           {/* <Link href="https://wakethedead.ai" target="_blank">
               <div className="relative flex flex-col items-center group">
                 <img
