@@ -20,6 +20,7 @@ const BlankCanvas: React.FC = () => {
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showMessage, setShowMessage] = useState(true);
   const lines = useRef<Line[]>([]);
   const currentLine = useRef<Point[]>([]);
   const router = useRouter();
@@ -170,7 +171,7 @@ const BlankCanvas: React.FC = () => {
   };
 
   return (
-    <div className={`relative w-full h-dvh ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} touch-none`}>
+    <div className={`relative w-full min-h-dvh ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} touch-none`}>
       <button 
         onClick={goHome}
         className={`absolute top-4 left-4 p-2 z-10 ${isDarkMode ? 'text-white' : 'text-black'}`}
@@ -183,6 +184,26 @@ const BlankCanvas: React.FC = () => {
       >
         {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
       </button>
+      {/* Secret Message */}
+      {showMessage && (
+        <div 
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
+          onClick={() => setShowMessage(false)}
+        >
+          <div className="relative">
+            <img
+              src="/image/post-it.png"
+              alt="Post-it note"
+              className="w-80 h-80 object-contain transform "
+            />
+            <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-marydale text-base md:text-xl text-center whitespace-nowrap">
+              You&apos;ve reached the 
+              <br /> <span className="italic">secret</span> canvas.<br />
+              Have fun :)
+            </span>
+          </div>
+        </div>
+      )}
       <canvas
         ref={canvasRef}
         onMouseDown={startDrawing}
