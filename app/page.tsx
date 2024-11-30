@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { ArrowRight, Coffee } from 'lucide-react';
 import { Instagram, Youtube } from 'lucide-react';
 import { ReactNode } from 'react';
+import Image from 'next/image';
+
 
 interface SocialMediaItem {
   id: string;
@@ -79,13 +81,16 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-4 aspect-[2/1]">
               {/* Post-it Note */}
               <div className="relative flex items-center justify-center">
-                <div className="w-full h-full transform" style={{ transform: 'rotate(-6deg)' }}>
-                  <img
-                    src="/image/post-it.png"
-                    alt="Post-it note"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+  <div className="w-full h-full transform -rotate-6">
+    <Image
+      src="/image/post-it.png"
+      alt="Post-it note"
+      width={300}
+      height={300}
+      className="w-full h-full object-contain"
+      unoptimized={false}
+    />
+  </div>
                 <span 
                   className="absolute top-1/2 left-1/2 font-marydale text-xl md:text-2xl"
                   style={{ 
