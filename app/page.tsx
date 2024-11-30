@@ -15,7 +15,7 @@ interface SocialMediaItem {
 
 export default function Home() {
   return (
-    <div className="font-helvetica w-full flex flex-col min-h-dvh pb-4 p-5 pt-0">
+    <div className="font-helvetica w-full flex flex-col min-h-dvh pb-4 p-5 pt-0 overflow-x-hidden">
       <div className="flex flex-col items-center w-full py-8 cursor-default">
         <a href="/ablankcanvas" className="flex items-center text-center cursor-default
           font-marydale  
@@ -106,7 +106,7 @@ export default function Home() {
                 },
                 {
                   id: '3',
-                  title: 'BANANA',
+                  title: 'BANANAAAA',
                   url: 'https://buymeacoffee.com/kingbob',
                   icon: <Coffee size={24} className="flex-shrink-0" />
                 },
