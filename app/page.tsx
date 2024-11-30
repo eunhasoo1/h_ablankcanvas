@@ -79,12 +79,20 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-4 aspect-[2/1]">
               {/* Post-it Note */}
               <div className="relative flex items-center justify-center">
-                <img
-                  src="/image/post-it.png"
-                  alt="Post-it note"
-                  className="w-full h-full object-contain transform -rotate-6"
-                />
-                <span className="-rotate-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-marydale text-xl md:text-2xl">
+                <div className="w-full h-full transform" style={{ transform: 'rotate(-6deg)' }}>
+                  <img
+                    src="/image/post-it.png"
+                    alt="Post-it note"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <span 
+                  className="absolute top-1/2 left-1/2 font-marydale text-xl md:text-2xl"
+                  style={{ 
+                    transform: 'translate(-50%, -50%) rotate(-6deg)',
+                    WebkitTransform: 'translate(-50%, -50%) rotate(-6deg)' 
+                  }}
+                >
                   Hi :)
                 </span>
               </div>
@@ -106,7 +114,7 @@ export default function Home() {
                 },
                 {
                   id: '3',
-                  title: 'BANANAAAA',
+                  title: 'BANANA',
                   url: 'https://buymeacoffee.com/kingbob',
                   icon: <Coffee size={24} className="flex-shrink-0" />
                 },
