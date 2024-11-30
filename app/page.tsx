@@ -106,7 +106,7 @@ export default function Home() {
                 },
                 {
                   id: '3',
-                  title: 'BANANAAAA',
+                  title: 'BANANA',
                   url: 'https://buymeacoffee.com/kingbob',
                   icon: <Coffee size={24} className="flex-shrink-0" />
                 },
