@@ -1,0 +1,76 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import Message from './Message';
+
+interface VideoData {
+  videoId: string;
+  title: string;
+}
+
+interface ErrorData {
+  error: string;
+}
+
+export default function LatestVideo() {
+  const [video, setVideo] = useState<VideoData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/latest-video')
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json() as ErrorData;
+          throw new Error(errorData.error || 'Failed to fetch video');
+        }
+        return res.json();
+      })
+      .then((data: VideoData) => setVideo(data))
+      .catch(err => {
+        console.error('Error fetching latest video:', err);
+        setError(err.message);
+      });
+  }, []);
+
+  if (error) {
+    return (
+      <div className="w-full max-w-4xl mx-auto mb-6">
+        <div className="relative pb-[56.25%] h-0 rounded-2xl bg-red-50 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center text-red-500">
+            {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-4xl mx-auto mb-6">
+      <div className="flex flex-col">
+        {!video ? (
+          <div className="relative pb-[56.25%] h-0 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+            <div className="absolute inset-0 animate-pulse">
+              <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />
+            </div>
+          </div>
+        ) : (
+          <a 
+            href={`https://www.youtube.com/watch?v=${video.videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block relative pb-[56.25%] h-0 rounded-2xl overflow-hidden group"
+          >
+            <iframe
+              className="absolute top-0 left-0 w-full h-full pointer-events-none"
+              src={`https://www.youtube.com/embed/${video.videoId}`}
+              title={video.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+          </a>
+        )}
+      </div>
+    </div>
+  );
+} 
