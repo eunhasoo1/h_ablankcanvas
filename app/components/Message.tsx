@@ -40,7 +40,6 @@ export default function Message({ text, type = 'receive', showTail = true }: Mes
           after:h-[16px]
           after:w-[18px]
           after:bg-white
-          dark:after:bg-black
           ${type === 'send'
             ? `after:right-[-18px]
                after:[border-bottom-left-radius:8px]`
