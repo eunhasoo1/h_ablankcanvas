@@ -12,28 +12,45 @@ export async function GET() {
   }
 
   try {
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?` +
+    // 1. 먼저 채널의 uploads 플레이리스트 ID를 가져옵니다
+    const channelResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?` +
       new URLSearchParams({
         key: YOUTUBE_API_KEY,
-        channelId: CHANNEL_ID,
-        part: 'snippet,id',
-        order: 'date',
+        id: CHANNEL_ID,
+        part: 'contentDetails',
+      })
+    );
+
+    if (!channelResponse.ok) {
+      throw new Error('Failed to fetch channel data');
+    }
+
+    const channelData = await channelResponse.json();
+    const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+    // 2. uploads 플레이리스트에서 최신 영상을 가져옵니다
+    const videoResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/playlistItems?` +
+      new URLSearchParams({
+        key: YOUTUBE_API_KEY,
+        playlistId: uploadsPlaylistId,
+        part: 'snippet',
         maxResults: '1',
-        type: 'video'
+        order: 'date'
       })
     );
     
-    if (!response.ok) {
-      const error = await response.json();
+    if (!videoResponse.ok) {
+      const error = await videoResponse.json();
       console.error('YouTube API Error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch from YouTube API' },
-        { status: response.status }
+        { status: videoResponse.status }
       );
     }
 
-    const data = await response.json();
+    const data = await videoResponse.json();
     
     if (!data.items?.[0]) {
       return NextResponse.json(
@@ -43,7 +60,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      videoId: data.items[0].id.videoId,
+      videoId: data.items[0].snippet.resourceId.videoId,
       title: data.items[0].snippet.title,
     });
   } catch (error) {
