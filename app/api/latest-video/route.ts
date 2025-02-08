@@ -12,7 +12,7 @@ export async function GET() {
   }
 
   try {
-    // 1. 먼저 채널의 uploads 플레이리스트 ID를 가져옵니다
+    // 1. 채널의 uploads 플레이리스트 ID를 가져옵니다
     const channelResponse = await fetch(
       `https://www.googleapis.com/youtube/v3/channels?` +
       new URLSearchParams({
@@ -37,10 +37,10 @@ export async function GET() {
         playlistId: uploadsPlaylistId,
         part: 'snippet',
         maxResults: '1',
-        order: 'date'
+        // order 파라미터 제거 - playlistItems는 자동으로 최신순으로 정렬됩니다
       })
     );
-    
+
     if (!videoResponse.ok) {
       const error = await videoResponse.json();
       console.error('YouTube API Error:', error);
@@ -51,7 +51,6 @@ export async function GET() {
     }
 
     const data = await videoResponse.json();
-    
     if (!data.items?.[0]) {
       return NextResponse.json(
         { error: 'No videos found' },
@@ -59,9 +58,15 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({
+    // 캐시 방지를 위한 헤더 추가
+    return new NextResponse(JSON.stringify({
       videoId: data.items[0].snippet.resourceId.videoId,
       title: data.items[0].snippet.title,
+    }), {
+      headers: {
+        'Cache-Control': 'no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
     });
   } catch (error) {
     console.error('Error fetching YouTube data:', error);
@@ -70,4 +75,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-} 
+}
