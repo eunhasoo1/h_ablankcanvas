@@ -3,6 +3,15 @@ import { NextResponse } from 'next/server';
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = 'UCchRDHJJRIneU21J9pyN_eg';
 
+interface PlaylistItem {
+  snippet: {
+    resourceId: {
+      videoId: string;
+    };
+    title: string;
+  };
+}
+
 export async function GET() {
   if (!YOUTUBE_API_KEY) {
     return NextResponse.json(
@@ -36,8 +45,7 @@ export async function GET() {
         key: YOUTUBE_API_KEY,
         playlistId: uploadsPlaylistId,
         part: 'snippet',
-        maxResults: '1',
-        // order 파라미터 제거 - playlistItems는 자동으로 최신순으로 정렬됩니다
+        maxResults: '50',
       })
     );
 
@@ -51,17 +59,29 @@ export async function GET() {
     }
 
     const data = await videoResponse.json();
-    if (!data.items?.[0]) {
+    if (!data.items?.length) {
       return NextResponse.json(
         { error: 'No videos found' },
         { status: 404 }
       );
     }
 
+    // Shorts 필터링 (URL에 '/shorts/'가 포함된 영상 제외)
+    const nonShortsVideo = data.items.find((item: PlaylistItem) => 
+      !item.snippet.resourceId.videoId.toLowerCase().includes('shorts')
+    );
+
+    if (!nonShortsVideo) {
+      return NextResponse.json(
+        { error: 'No regular videos found' },
+        { status: 404 }
+      );
+    }
+
     // 캐시 방지를 위한 헤더 추가
     return new NextResponse(JSON.stringify({
-      videoId: data.items[0].snippet.resourceId.videoId,
-      title: data.items[0].snippet.title,
+      videoId: nonShortsVideo.snippet.resourceId.videoId,
+      title: nonShortsVideo.snippet.title,
     }), {
       headers: {
         'Cache-Control': 'no-store, must-revalidate',
