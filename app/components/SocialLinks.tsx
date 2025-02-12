@@ -6,7 +6,7 @@ const SocialLinks = () => {
     {
       id: '1',
       title: 'YouTube',
-      url: 'https://www.youtube.com/@ABlankCanvas_Data',
+      url: 'https://www.youtube.com/@hablankcanvas_data',
       icon: <Youtube size={20} className="flex-shrink-0" />
     },
     {

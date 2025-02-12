@@ -117,7 +117,7 @@ export default function Home() {
                   {
                     id: '1',
                     title: 'Youtube',
-                    url: 'https://www.youtube.com/@ABlankCanvas_Data',
+                    url: 'https://www.youtube.com/@hablankcanvas_data',
                     icon: <Youtube size={24} className="flex-shrink-0" />
                   },
                   {
