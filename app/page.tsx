@@ -106,36 +106,42 @@ export default function Home() {
             <div className="gap-4 mt-12">
             {/* <Message text="You can find me here" showTail={true} /> */}
               {/* Social Links Container */}
-              <div className=" text-[#282828] rounded-3xl pt-2 flex flex-row justify-center gap-4">
+              <div className="text-[#282828] rounded-3xl pt-2 flex flex-col items-center gap-4">
                 {[
                   {
-                    id: '2',
+                    id: '1',
                     title: 'Instagram',
                     url: 'https://www.instagram.com/h_ablankcanvas/',
                     icon: <Instagram size={24} className="flex-shrink-0" />
                   },
                   {
-                    id: '1',
-                    title: 'Youtube',
-                    url: 'https://www.youtube.com/@hablankcanvas_data',
+                    id: '2',
+                    title: 'Youtube - Main',
+                    url: 'https://www.youtube.com/@h_ablankcanvas',
                     icon: <Youtube size={24} className="flex-shrink-0" />
                   },
                   {
                     id: '3',
-                    title: 'BANANA',
-                    url: 'https://buymeacoffee.com/kingbob',
-                    icon: <Coffee size={24} className="flex-shrink-0" />
+                    title: 'Youtube - Full version',
+                    url: 'https://www.youtube.com/@hablankcanvas_data',
+                    icon: <Youtube size={24} className="flex-shrink-0" />
                   },
+                  // {
+                  //   id: '4',
+                  //   title: 'BANANA',
+                  //   url: 'https://buymeacoffee.com/kingbob',
+                  //   icon: <Coffee size={24} className="flex-shrink-0" />
+                  // },
                 ].map((item: SocialMediaItem) => (
                   <a 
                     key={item.id} 
                     href={item.url} 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-marydale text-xl text-[#282828] hover:text-gray-600 transition-colors flex flex-row items-center gap-2"
+                    className="font-marydale text-xl text-[#282828] hover:text-gray-600 transition-colors flex flex-row items-center gap-2 w-full max-w-[250px]"
                   >
                     {item.icon}
-                    {/* <span className="text-left break-all">{item.title}</span> */}
+                    <span className="text-left">{item.title}</span>
                   </a>
                 ))}
               </div>

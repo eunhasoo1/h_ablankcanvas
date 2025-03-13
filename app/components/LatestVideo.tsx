@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Message from './Message';
+import Image from 'next/image';
 
 interface VideoData {
   videoId: string;
@@ -29,7 +30,7 @@ export default function LatestVideo() {
         }
         const data: VideoData = await res.json();
         setVideo(data);
-      } catch (err: any) { // 여기서 타입을 명시적으로 지정
+      } catch (err: any) {
         console.error('Error fetching latest video:', err);
         setError(err?.message || 'Unknown error occurred');
       }
@@ -56,9 +57,9 @@ export default function LatestVideo() {
     <div className="w-full max-w-4xl mx-auto mb-6">
       <div className="flex flex-col">
         {!video ? (
-          <div className="relative pb-[56.25%] h-0 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+          <div className="relative pb-[56.25%] h-0 rounded-2xl overflow-hidden bg-gray-100">
             <div className="absolute inset-0 animate-pulse">
-              <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />
+              <div className="w-full h-full bg-gray-200" />
             </div>
           </div>
         ) : (
@@ -70,9 +71,9 @@ export default function LatestVideo() {
           >
             <iframe
               className="absolute top-0 left-0 w-full h-full pointer-events-none"
-              src={`https://www.youtube.com/embed/${video.videoId}?enablejsapi=0&origin=${window.location.origin}`}
+              src={`https://www.youtube.com/embed/${video.videoId}?modestbranding=1&rel=0&playsinline=1&controls=0&showinfo=0&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
               title={video.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               loading="lazy"
               sandbox="allow-same-origin allow-scripts"
             />

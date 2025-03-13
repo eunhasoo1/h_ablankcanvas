@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-const CHANNEL_ID = 'UCchRDHJJRIneU21J9pyN_eg';
+const CHANNEL_ID = 'UC5akXfOPHnMBz7Iqx5xi3Ug';
 
 interface PlaylistItem {
   snippet: {
