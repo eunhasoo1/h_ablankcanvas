@@ -122,7 +122,7 @@ export default function Home() {
                   },
                   {
                     id: '3',
-                    title: 'Youtube - Full version',
+                    title: 'Youtube - Timelapses',
                     url: 'https://www.youtube.com/@hablankcanvas_data',
                     icon: <Youtube size={24} className="flex-shrink-0" />
                   },
