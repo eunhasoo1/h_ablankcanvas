@@ -80,7 +80,7 @@ export default function Home() {
     {
       id: '2',
       title: 'Haeun',
-      description: 'Main channel',
+      description: 'main channel',
       url: 'https://www.youtube.com/@h_ablankcanvas',
       icon: <Youtube size={28} className="flex-shrink-0" />
     },
