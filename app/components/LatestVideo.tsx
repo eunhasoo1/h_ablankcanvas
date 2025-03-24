@@ -21,9 +21,17 @@ export default function LatestVideo() {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const res = await fetch('/api/latest-video', {
-          cache: 'no-store'
+        // 타임스탬프로 캐싱 방지
+        const timestamp = new Date().getTime();
+        const res = await fetch(`/api/latest-video?t=${timestamp}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
         });
+        
         if (!res.ok) {
           const errorData = await res.json() as ErrorData;
           throw new Error(errorData.error || 'Failed to fetch video');
@@ -37,7 +45,8 @@ export default function LatestVideo() {
     };
   
     fetchVideo();
-    const interval = setInterval(fetchVideo, 300000);
+    // 1분마다 새로고침
+    const interval = setInterval(fetchVideo, 60000);
     return () => clearInterval(interval);
   }, []);
 
