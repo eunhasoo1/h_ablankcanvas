@@ -47,6 +47,49 @@ export default function LoginPage() {
       
       if (error) {
         setError('Login failed. Please check your email and password.');
+      } else {
+        // 로그인 성공 시, 관리자 여부 확인 후 적절한 페이지로 리다이렉션
+        console.log('로그인 성공! 관리자 권한 확인 중...');
+        
+        // 최대 5초 후에는 홈으로 이동 (백업 메커니즘)
+        const redirectTimer = setTimeout(() => {
+          console.log('타임아웃 발생, 홈으로 리다이렉션');
+          router.push('/');
+        }, 5000);
+        
+        // 관리자 상태 확인을 위한 폴링 (더 짧은 간격으로)
+        let checkCount = 0;
+        const maxChecks = 20; // 최대 20회 시도
+        
+        const checkAdminStatus = setInterval(() => {
+          checkCount++;
+          console.log(`관리자 상태 확인 중... (${checkCount}/${maxChecks})`, { 
+            isAuthenticated, 
+            isAdminUser,
+            isLoading 
+          });
+          
+          // 로딩이 완료되었고 인증 상태가 업데이트된 경우
+          if (!isLoading && isAuthenticated) {
+            clearInterval(checkAdminStatus);
+            clearTimeout(redirectTimer);
+            
+            if (isAdminUser) {
+              console.log('관리자 권한 확인됨, 관리자 페이지로 이동');
+              router.push('/admin');
+            } else {
+              console.log('관리자 권한 없음, 홈으로 이동');
+              router.push('/');
+            }
+          }
+          
+          // 최대 시도 횟수 초과 시 중단
+          if (checkCount >= maxChecks) {
+            console.log('최대 시도 횟수 초과, 확인 중단');
+            clearInterval(checkAdminStatus);
+            // 타임아웃 리다이렉션은 여전히 실행됨
+          }
+        }, 250); // 250ms마다 확인 (더 자주)
       }
     } catch (err) {
       setError('An error occurred during login process.');

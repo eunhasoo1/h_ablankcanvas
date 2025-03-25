@@ -25,29 +25,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // 초기 세션 가져오기
     const getSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        const adminStatus = await isAdmin(session.user.id);
-        setIsAdminUser(adminStatus);
+      console.log('초기 세션 가져오기 시작');
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('세션 가져오기 오류:', error);
+          setIsLoading(false);
+          return;
+        }
+        
+        console.log('세션 가져오기 성공:', !!session);
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          console.log('관리자 권한 확인 시작:', session.user.id);
+          const adminStatus = await isAdmin(session.user.id);
+          console.log('관리자 권한 확인 결과:', adminStatus);
+          setIsAdminUser(adminStatus);
+        }
+      } catch (err) {
+        console.error('세션 처리 중 예외 발생:', err);
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
 
     getSession();
 
     // 인증 상태 변화 감지
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('인증 상태 변경 감지:', event);
       setSession(session);
       setUser(session?.user ?? null);
       
-      if (session?.user) {
+      // 로그인 시에만 관리자 상태 확인 (로그아웃 시는 초기화)
+      if (event === 'SIGNED_IN' && session?.user) {
+        console.log('로그인 감지, 관리자 권한 확인 시작');
         const adminStatus = await isAdmin(session.user.id);
+        console.log('관리자 권한 확인 결과:', adminStatus);
         setIsAdminUser(adminStatus);
-      } else {
+      } else if (event === 'SIGNED_OUT') {
+        console.log('로그아웃 감지, 관리자 상태 초기화');
         setIsAdminUser(false);
       }
       

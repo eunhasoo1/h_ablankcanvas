@@ -65,51 +65,39 @@ export default function AdminPage() {
       }
     }));
 
-    // 페이지 로드 시 세션 유효성 강제 확인
-    const verifySessionOnLoad = async () => {
-      console.log('세션 유효성 확인 중...');
-      try {
-        // 세션 새로 가져오기
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error || !session) {
-          console.log('유효한 세션 없음, 로그인 페이지로 이동');
-          router.push('/login');
-          return;
-        }
-        
-        // 관리자 권한 확인
-        const adminStatus = await isAdmin(session.user.id);
-        console.log('관리자 권한 확인 결과:', adminStatus);
-        
-        if (!adminStatus) {
-          console.log('관리자 권한 없음, 로그아웃 후 로그인 페이지로 이동');
-          signOut().then(() => {
-            router.push('/login');
-          });
-        }
-      } catch (err) {
-        console.error('세션 확인 중 오류:', err);
+    // 로그인 상태 확인 및 리다이렉션
+    // isLoading이 false이거나 3초 이상 지속되면 확인
+    const loginCheckTimeout = setTimeout(() => {
+      console.log('로그인 상태 타임아웃 확인:', { isLoading, isAuthenticated });
+      
+      if (!isAuthenticated) {
+        console.log('인증되지 않음 (타임아웃), 로그인 페이지로 이동');
         router.push('/login');
       }
-    };
+    }, 3000); // 3초 후 강제 확인
 
-    // isLoading이 false가 되면 한 번 더 세션 확인
+    // 로딩이 완료되면 즉시 확인
     if (!isLoading) {
-      verifySessionOnLoad();
+      clearTimeout(loginCheckTimeout);
       
       if (!isAuthenticated) {
         console.log('인증되지 않음, 로그인 페이지로 이동');
         router.push('/login');
+        return;
       } else if (!isAdminUser) {
         console.log('관리자 권한 없음, 로그아웃 후 로그인 페이지로 이동');
         signOut().then(() => {
           router.push('/login');
         });
+        return;
       } else {
         console.log('관리자로 인증됨');
       }
     }
+
+    return () => {
+      clearTimeout(loginCheckTimeout);
+    };
   }, [isLoading, isAuthenticated, isAdminUser, router, signOut, user]);
 
   useEffect(() => {
