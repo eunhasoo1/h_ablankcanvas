@@ -4,28 +4,81 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { testSupabaseConnection } from '@/lib/supabase';
+
+// 디버그 정보 타입 정의
+interface DebugInfo {
+  status: string;
+  supabase?: { connected: boolean };
+  auth?: {
+    isLoading: boolean;
+    isAuthenticated: boolean;
+    isAdminUser: boolean;
+    user: { id: string; email: string | undefined } | null;
+  };
+  error?: any;
+  details?: any;
+}
 
 export default function AdminPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [currentVideo, setCurrentVideo] = useState<{ videoId: string; title: string } | null>(null);
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
   
   const router = useRouter();
-  const { isAuthenticated, isLoading, isAdminUser, signOut } = useAuth();
+  const { isAuthenticated, isLoading, isAdminUser, signOut, user } = useAuth();
 
-  // 인증 및 관리자 권한 확인
+  // Supabase 연결 테스트
   useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const isConnected = await testSupabaseConnection();
+        setDebugInfo(prev => ({
+          ...prev,
+          status: isConnected ? 'Supabase 연결 성공' : 'Supabase 연결 실패',
+          supabase: { connected: isConnected }
+        }));
+      } catch (err) {
+        setDebugInfo(prev => ({
+          ...prev,
+          status: 'Supabase 연결 확인 중 오류',
+          error: err
+        }));
+      }
+    };
+    
+    checkConnection();
+  }, []);
+
+  // 인증 및 관리자 권한 확인 (디버깅 정보 추가)
+  useEffect(() => {
+    // 인증 상태 디버깅 정보 업데이트
+    setDebugInfo(prev => ({
+      ...(prev || { status: 'Checking auth' }),
+      auth: {
+        isLoading,
+        isAuthenticated,
+        isAdminUser,
+        user: user ? { id: user.id, email: user.email } : null
+      }
+    }));
+
     if (!isLoading) {
       if (!isAuthenticated) {
+        console.log('인증되지 않음, 로그인 페이지로 이동');
         router.push('/login');
       } else if (!isAdminUser) {
+        console.log('관리자 권한 없음, 로그아웃 후 로그인 페이지로 이동');
         signOut().then(() => {
           router.push('/login');
         });
+      } else {
+        console.log('관리자로 인증됨');
       }
     }
-  }, [isLoading, isAuthenticated, isAdminUser, router, signOut]);
+  }, [isLoading, isAuthenticated, isAdminUser, router, signOut, user]);
 
   useEffect(() => {
     // 현재 설정된 비디오 데이터 가져오기
@@ -108,14 +161,25 @@ export default function AdminPage() {
     }
   };
 
-  // 로딩 중이거나 권한 확인 중인 경우
+  // 로딩 중이거나 권한 확인 중인 경우 디버깅 정보도 함께 표시
   if (isLoading || (isAuthenticated && !isAdminUser)) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         <div className="p-4 text-center">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-700">Checking permissions...</p>
+          <p className="text-gray-700 mb-4">Checking permissions...</p>
         </div>
+        
+        {/* 디버깅 정보 표시 (개발용, 배포 시 제거 필요) */}
+        {debugInfo && (
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg max-w-md w-full text-left text-sm overflow-auto">
+            <h3 className="font-medium mb-2">Debug Info:</h3>
+            <p className="mb-2">Status: {debugInfo.status}</p>
+            <pre className="bg-gray-200 p-3 rounded text-xs overflow-auto max-h-60">
+              {JSON.stringify(debugInfo, null, 2)}
+            </pre>
+          </div>
+        )}
       </div>
     );
   }
@@ -145,6 +209,18 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
+
+        {/* 디버깅 정보 (개발용) */}
+        {debugInfo && (
+          <div className="mb-4 p-3 bg-gray-100 rounded-lg text-xs overflow-auto">
+            <details>
+              <summary className="cursor-pointer font-medium">Debug Info</summary>
+              <pre className="mt-2 bg-gray-200 p-2 rounded overflow-auto max-h-60">
+                {JSON.stringify(debugInfo, null, 2)}
+              </pre>
+            </details>
+          </div>
+        )}
 
         {currentVideo && (
           <div className="mb-6 p-4 bg-gray-100 rounded-lg">
