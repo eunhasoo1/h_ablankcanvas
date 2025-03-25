@@ -80,11 +80,10 @@ export default function LatestVideo() {
           >
             <iframe
               className="absolute top-0 left-0 w-full h-full pointer-events-none"
-              src={`https://www.youtube.com/embed/${video.videoId}?modestbranding=1&rel=0&playsinline=1&controls=0&showinfo=0&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
+              src={`https://www.youtube-nocookie.com/embed/${video.videoId}?modestbranding=1&rel=0&playsinline=1`}
               title={video.title}
               allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               loading="lazy"
-              sandbox="allow-same-origin allow-scripts"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
           </a>

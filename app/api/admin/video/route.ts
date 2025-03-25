@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { supabase, isAdmin } from '@/lib/supabase';
 
 const dataFilePath = path.join(process.cwd(), 'app/data/videoData.json');
 
-// 비디오 데이터 읽기 함수
+// Read video data function
 async function readVideoData() {
   try {
     const data = await fs.readFile(dataFilePath, 'utf8');
@@ -15,7 +16,7 @@ async function readVideoData() {
   }
 }
 
-// 비디오 데이터 쓰기 함수
+// Write video data function
 async function writeVideoData(data: any) {
   try {
     await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
@@ -26,7 +27,23 @@ async function writeVideoData(data: any) {
   }
 }
 
-// GET 요청 처리 - 현재 비디오 데이터 가져오기
+// Authentication check function
+async function checkAuth(request: NextRequest) {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session?.user) {
+    return { authenticated: false, error: 'Not authenticated' };
+  }
+
+  const adminStatus = await isAdmin(session.user.id);
+  if (!adminStatus) {
+    return { authenticated: false, error: 'Not authorized' };
+  }
+
+  return { authenticated: true, userId: session.user.id };
+}
+
+// GET request handler - Get current video data
 export async function GET() {
   try {
     const videoData = await readVideoData();
@@ -40,9 +57,19 @@ export async function GET() {
   }
 }
 
-// POST 요청 처리 - 비디오 데이터 업데이트
+// POST request handler - Update video data
 export async function POST(request: NextRequest) {
   try {
+    // Authentication check
+    const { authenticated, error } = await checkAuth(request);
+    
+    if (!authenticated) {
+      return NextResponse.json(
+        { error: error || 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const { videoId, title } = await request.json();
 
     if (!videoId) {
