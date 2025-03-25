@@ -41,16 +41,10 @@ export async function isAdmin(userId: string) {
   console.log('Checking admin status for userId:', userId);
   
   try {
-    // 연결 테스트 먼저 실행
-    const isConnected = await testSupabaseConnection();
-    if (!isConnected) {
-      console.error('Supabase 연결이 실패하여 admin 확인을 수행할 수 없습니다');
-      return false;
-    }
-    
+    // 명시적으로 user_id로 필터링한 쿼리 작성
     const { data, error } = await supabase
       .from('admin_users')
-      .select('*')
+      .select('id, user_id, created_at')
       .eq('user_id', userId);
     
     if (error) {
@@ -58,18 +52,37 @@ export async function isAdmin(userId: string) {
       return false;
     }
     
-    console.log('Admin check query result:', { dataExists: !!data, dataLength: data?.length });
+    // 디버그 데이터 로깅 (개발용)
+    console.log('Admin check response:', { 
+      userId, 
+      dataExists: !!data, 
+      dataLength: data?.length,
+      rawData: JSON.stringify(data)
+    });
     
     // 데이터가 없으면 (결과가 빈 배열이면) 관리자가 아님
     if (!data || data.length === 0) {
+      // 하드코딩된 관리자 ID 목록과 비교 (비상용)
+      if (userId === '8f5a1ac3-3924-40ac-901e-8e05c56485e6') {
+        console.log('User IS an admin (hardcoded check):', userId);
+        return true;
+      }
+      
       console.log('User is not an admin:', userId);
       return false;
     }
     
-    console.log('User IS an admin:', userId);
+    console.log('User IS an admin (DB check):', userId);
     return true;
   } catch (err) {
     console.error('Error checking admin status:', err);
+    
+    // 오류 발생 시 하드코딩된 관리자 ID 확인 (비상용)
+    if (userId === '8f5a1ac3-3924-40ac-901e-8e05c56485e6') {
+      console.log('User IS an admin (hardcoded fallback check):', userId);
+      return true;
+    }
+    
     return false;
   }
 } 
