@@ -16,6 +16,7 @@ interface SocialMediaItem {
   url: string;
   icon: ReactNode;
   popupIcon?: ReactNode;
+  description?: string;
 }
 
 // 미디어 쿼리 훅 추가
@@ -71,11 +72,11 @@ export default function Home() {
     }, 300);
   };
 
-  const socialLinks = [
+  const socialLinks: SocialMediaItem[] = [
     {
       id: '1',
       title: 'I live here',
-      // description: 'h_ablankcanvas',
+      description: 'h_ablankcanvas',
       url: 'https://www.instagram.com/h_ablankcanvas/',
       icon: <Instagram size={28} className="flex-shrink-0" />,
       popupIcon: <Image src="/image/Instagram_icon.png" alt="Instagram" width={28} height={28} className="flex-shrink-0" />
@@ -83,7 +84,7 @@ export default function Home() {
     {
       id: '2',
       title: 'Main - The Making of',
-      // description: 'Haeun',
+      description: 'h_ablankcanvas',
       url: 'https://www.youtube.com/@h_ablankcanvas',
       icon: <Youtube size={28} className="flex-shrink-0" />,
       popupIcon: <Image src="/image/youtubeicon.png" alt="YouTube" width={28} height={28} className="flex-shrink-0" />
@@ -91,7 +92,7 @@ export default function Home() {
     {
       id: '3',
       title: 'Timelapse vids',
-      // description: 'hablankcanvas_data',
+      description: 'hablankcanvas_data',
       url: 'https://www.youtube.com/@hablankcanvas_data',
       icon: <Youtube size={28} className="flex-shrink-0" />,
       popupIcon: <Image src="/image/youtubeicon.png" alt="YouTube" width={28} height={28} className="flex-shrink-0" />
@@ -280,9 +281,6 @@ export default function Home() {
                     <div className="text-[#282828]">{item.popupIcon || item.icon}</div>
                     <div className="flex flex-col">
                       <span className="text-[#282828]">{item.title}</span>
-                      {item.description && (
-                        <span className="text-xs text-gray-500">{item.description}</span>
-                      )}
                     </div>
                   </a>
                 ))}
@@ -332,9 +330,6 @@ export default function Home() {
                     <div className="text-[#282828]">{item.popupIcon || item.icon}</div>
                     <div className="flex flex-col">
                       <span className="text-[#282828]">{item.title}</span>
-                      {item.description && (
-                        <span className="text-xs text-gray-500">{item.description}</span>
-                      )}
                     </div>
                   </a>
                 ))}
