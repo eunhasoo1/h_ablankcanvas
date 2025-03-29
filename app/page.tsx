@@ -15,6 +15,7 @@ interface SocialMediaItem {
   title: string;
   url: string;
   icon: ReactNode;
+  popupIcon?: ReactNode;
 }
 
 // 미디어 쿼리 훅 추가
@@ -73,24 +74,28 @@ export default function Home() {
   const socialLinks = [
     {
       id: '1',
-      title: 'IG',
+      title: 'I live here',
+      // description: 'h_ablankcanvas',
       url: 'https://www.instagram.com/h_ablankcanvas/',
-      icon: <Instagram size={28} className="flex-shrink-0" />
+      icon: <Instagram size={28} className="flex-shrink-0" />,
+      popupIcon: <Image src="/image/Instagram_icon.png" alt="Instagram" width={28} height={28} className="flex-shrink-0" />
     },
     {
       id: '2',
-      title: 'Haeun',
-      description: 'main channel',
+      title: 'Main - The Making of',
+      // description: 'Haeun',
       url: 'https://www.youtube.com/@h_ablankcanvas',
-      icon: <Youtube size={28} className="flex-shrink-0" />
+      icon: <Youtube size={28} className="flex-shrink-0" />,
+      popupIcon: <Image src="/image/youtubeicon.png" alt="YouTube" width={28} height={28} className="flex-shrink-0" />
     },
     {
       id: '3',
-      title: 'hablankcanvas_data',
-      description: 'home for all my timelapse vids',
+      title: 'Timelapse vids',
+      // description: 'hablankcanvas_data',
       url: 'https://www.youtube.com/@hablankcanvas_data',
-      icon: <Youtube size={28} className="flex-shrink-0" />
-    }
+      icon: <Youtube size={28} className="flex-shrink-0" />,
+      popupIcon: <Image src="/image/youtubeicon.png" alt="YouTube" width={28} height={28} className="flex-shrink-0" />
+    },
   ];
 
   return (
@@ -272,7 +277,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors"
                   >
-                    <div className="text-[#282828]">{item.icon}</div>
+                    <div className="text-[#282828]">{item.popupIcon || item.icon}</div>
                     <div className="flex flex-col">
                       <span className="text-[#282828]">{item.title}</span>
                       {item.description && (
@@ -324,7 +329,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors"
                   >
-                    <div className="text-[#282828]">{item.icon}</div>
+                    <div className="text-[#282828]">{item.popupIcon || item.icon}</div>
                     <div className="flex flex-col">
                       <span className="text-[#282828]">{item.title}</span>
                       {item.description && (
