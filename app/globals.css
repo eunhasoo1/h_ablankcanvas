@@ -9,7 +9,42 @@ html {
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
   height: 100%; /* Ensure the html element is at least as tall as the viewport */
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
 }
+
+body {
+  background-color: #ffffff; /* Set the fallback background color */
+  margin: 0; /* Reset default margin */
+  padding: 0; /* Reset default padding */
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: none;
+}
+
+.snap-start {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* 커스텀 커서 스타일 */
+.cursor-play {
+  cursor: none;
+  position: relative;
+}
+
+.custom-cursor-play {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  font-weight: bold;
+  font-size: 50px;
+  color: #ffe100;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
+  user-select: none;
+}
+
 /* 
 body {
   background-image: url('/image/backgroundImage.png'); 

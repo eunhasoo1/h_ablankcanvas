@@ -2,13 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Coffee, ChevronRight, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, X } from 'lucide-react';
 import { Instagram, Youtube } from 'lucide-react';
 import { ReactNode } from 'react';
 import Image from 'next/image';
-import LatestVideo from './components/LatestVideo';
-import Message from './components/Message';
-
+import LatestVideo from './components/LatestVideo_new';
 
 interface SocialMediaItem {
   id: string;
@@ -75,7 +73,7 @@ export default function Home() {
   const socialLinks: SocialMediaItem[] = [
     {
       id: '1',
-      title: 'Instagram',
+      title: 'I live here',
       description: 'h_ablankcanvas',
       url: 'https://www.instagram.com/h_ablankcanvas/',
       icon: <Instagram size={28} className="flex-shrink-0" />,
@@ -83,7 +81,7 @@ export default function Home() {
     },
     {
       id: '2',
-      title: 'Main',
+      title: 'Main - The Making of',
       description: 'h_ablankcanvas',
       url: 'https://www.youtube.com/@h_ablankcanvas',
       icon: <Youtube size={28} className="flex-shrink-0" />,
@@ -91,7 +89,7 @@ export default function Home() {
     },
     {
       id: '3',
-      title: 'Data',
+      title: 'Timelapse vids',
       description: 'hablankcanvas_data',
       url: 'https://www.youtube.com/@hablankcanvas_data',
       icon: <Youtube size={28} className="flex-shrink-0" />,
@@ -112,138 +110,140 @@ export default function Home() {
         }}
       >
         {/* Header - Full width */}
-        <div className="w-full bg-[#fafafa] py-4 pt-6">
-          <div className="flex flex-col items-center gap-1">
-            <button 
-              onClick={() => setShowPopup(true)} 
-              className="w-16 h-16 rounded-full overflow-hidden cursor-pointer border-0 p-0"
-            >
-              <Image
-                src="/image/profilepic.png"
-                alt="Profile"
-                width={60}
-                height={60}
-                className="w-full h-full object-cover"
-              />
-            </button>
-            <div className="flex flex-col items-center gap-1 pl-2">
-              <button 
-                onClick={() => setShowPopup(true)}
-                className="flex items-center text-[13px] text-[#8E8E93] cursor-pointer bg-transparent border-0 p-0"
-              >
-                <span>Haeun</span>
-                <ChevronRight size={14} className='translate-y-[1px] text-[#C7C7CC]' />
-              </button>
-            </div>
+        <div className="w-full p-5 md:p-8 py-6 md:py-6">
+          <div className="flex flex-col">
+            <h1 className="text-[22px] font-bold font-['Helvetica_Neue'] leading-[0.9] tracking-tight">HA-<br />EUN</h1>
           </div>
         </div>
 
-        {/* Content - With padding */}
-        <div className="flex-1 px-5 py-4 max-w-xl mx-auto w-full ">
-          <Message text="Latest" />
-          
-          <LatestVideo />
-          
-          <Message text="I make stuff :)" showTail={true} />
-
+        {/* Content */}
+        <div className="flex-1 w-full">
           <div className="flex-1 flex flex-col w-full">
-            <div className="flex-1 grid grid-cols-1 gap-3 w-full mx-auto md:mx-0">
-              {/* Coloso Course */}
-              <div className="flex">
-                <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer" className="w-full">
-                  <div className="relative flex flex-col h-full overflow-hidden rounded-3xl shadow-2xl shadow-black/10 group">
-                    <img
-                      src="/image/coloso.png"
-                      alt="Coloso Course"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-4 md:px-5 pr-3 md:pr-4 justify-between">
-                      <h2 className="text-md md:text-2xl font-normal">Coloso Course</h2>
-                      <div className="flex items-end justify-between">
-                        <p className="text-2xl md:text-4xl leading-tight font-medium">
-                          Your Characters,<br />Brought to Life.
-                        </p>
-                        <ArrowRight className="w-8 h-8" />
-                      </div>
-                    </div>
+            <div className="flex-1 flex flex-col gap-6 md:gap-24 w-full">
+              
+              {/* YouTube Section - Positioned to the right */}
+              <div className="w-full flex justify-end mt-16 md:mt-20">
+                <div className="w-3/5 mr-5 md:mr-8">
+                  <div className="mb-2">
+                    <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9] mb-0">YOU-</h2>
+                    <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9]">TUBE</h2>
                   </div>
-                </Link>
+                  <div className="w-full">
+                    <LatestVideo />
+                  </div>
+                </div>
               </div>
 
-              {/* Wake The Dead */}
-              {/* <div className="flex-1 mb-3">
-                <Link href="https://wakethedead.ai" target="_blank" className="h-full">
-                  <div className="relative flex flex-col h-full overflow-hidden rounded-3xl group">
-                    <img
-                      src="/image/wtd.png"
-                      alt="Wake The Dead"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute top-0 left-0 w-full h-full flex flex-col text-white py-3 px-4 md:py-4 md:px-5 pr-3 md:pr-4 justify-between">
-                      <h2 className="text-md md:text-2xl font-normal">Wake The Dead</h2>
-                      <div className="flex items-end justify-between">
-                        <p className="text-2xl md:text-4xl leading-tight font-medium">
-                          Emoji CPR<br />for any content 🚑
-                        </p>
-                        <ArrowRight className="w-8 h-8" />
-                      </div>
-                    </div>
+              {/* COLOSO Section - Positioned to the left */}
+              <div className="w-full mt-14 md:mt-16">
+                <div className="w-3/5 ml-5 md:ml-8">
+                  <div className="mb-2">
+                    <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9]">COLOSO</h2>
+                    <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9]">KR</h2>
                   </div>
-                </Link>
-              </div> */}
-
-              {/* Chatflix */}
-              <div className="flex-1 mb-3">
-                <Link href="https://www.chatflix.app" target="_blank" className="h-full">
-                  <div className="relative flex flex-col h-full overflow-hidden rounded-3xl shadow-2xl shadow-black/10 group">
-                    <img
-                      src="/image/chatflix_3.png"
-                      alt="Chatflix"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-0 left-0 w-full h-full flex flex-col text-black py-3 px-4 md:py-4 md:px-5 pr-3 md:pr-4 justify-between">
-                      <h2 className="text-md md:text-2xl font-normal">Chatflix</h2>
-                      <div className="flex items-end justify-between">
-                        <p className="text-2xl md:text-4xl leading-tight font-medium">
-                          {/* Your fav LLMs<br /> in one place. */}
-                          {/* It's 'Chat-flix'<br />for a reason. */}
-                          {/* I don't use ChatGPT. */}
-                          The Ultimate <br />LLM Collection
-                          {/* Every question <br /> deserves brilliance. */}
-                        </p>
-                        <ArrowRight className="w-8 h-8" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-
-              {/* Bottom Container for Post-it and Social Links */}
-              <div className="gap-4 mt-12">
-                {/* Social Links Container */}
-                <div className="text-[#282828] rounded-3xl pt-2 flex flex-row justify-center gap-4">
-                  {socialLinks.filter(item => item.id !== '3').map((item) => (
-                    <a 
-                      key={item.id} 
-                      href={item.url} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#282828] hover:text-gray-600 transition-colors flex items-center justify-center"
-                      aria-label={item.title}
-                    >
-                      {item.icon}
+                  <div className="w-full">
+                    <a href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer">
+                      <img 
+                        src="/image/coloso.png" 
+                        alt="Coloso" 
+                        className="w-full"
+                      />
                     </a>
-                  ))}
+                  </div>
+
+                  <div className="flex flex-col text-left my-2">
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">YOUR</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">CHARACTERS</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">BROUGHT</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">TO</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9] mb-1">LIFE</h3>
+                    <span className="text-[12px] font-normal font-['Helvetica_Neue'] leading-[0.9] ">
+                      Character<br />
+                      animation<br />
+                      course
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* CHATFLIX Section - Positioned to the right */}
+              <div className="w-full flex justify-end mt-8 md:mt-16">
+                <div className="w-3/5 mr-5 md:mr-8">
+                  <div className="mb-2">
+                    <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9] mb-0">CHAT-</h2>
+                    <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9]">FLIX</h2>
+                  </div>
+                  <div className="w-full border-[#707070] border-[1px]">
+                    <a href="https://www.chatflix.app" target="_blank" rel="noopener noreferrer">
+                      <img 
+                        src="/image/chatflix.png" 
+                        alt="Chatflix" 
+                        className="w-full"
+                      />
+                    </a>
+                  </div>
+
+                  <div className="flex flex-col text-left my-2">
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">ACCESS</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">TO ALL</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9]">YOUR FAV</h3>
+                    <h3 className="text-[13px] font-medium font-['Helvetica_Neue'] leading-[0.9] mb-1">LLMS</h3>
+                    <span className="text-[12px] font-normal font-['Helvetica_Neue'] leading-[0.9]">
+                      chatgpt, <br />
+                      deepseek, <br />
+                      claude <br />
+                      ...etc
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex justify-end w-full my-12 mt-80">
-            <div className="flex flex-col items-end">
-              <Message text="One story at a time" type='send' />
-              <span className="text-[11px] text-[#8D8C90] mt-1 mr-1 font-medium">
-                Delivered
-              </span>
+          
+          {/* Social Media Links at the bottom */}
+          <div className="w-full flex mt-32 md:mt-32 mb-8 px-5 md:px-8 ">
+            <div className="flex flex-col gap-2">
+              <a
+                href="https://www.instagram.com/h_ablankcanvas/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-70 transition-opacity"
+              >
+                <div className="">
+                  <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9] mb-0">INSTA-</h2>
+                  <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9]">GRAM</h2>
+                </div>
+              </a>
+              <a
+                href="https://www.instagram.com/h_ablankcanvas/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[12px] font-normal font-['Helvetica_Neue'] leading-[0.9] hover:opacity-70 transition-opacity"
+              >
+                h_ablankcanvas
+              </a>
+            </div>
+            
+            <div className="flex flex-col gap-2 ml-12">
+              <a
+                href="https://www.youtube.com/@h_ablankcanvas"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-70 transition-opacity"
+              >
+                <div className="">
+                  <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9] mb-0">YOU-</h2>
+                  <h2 className="text-[16px] font-medium font-['Helvetica_Neue'] leading-[0.9]">TUBE</h2>
+                </div>
+              </a>
+              <a
+                href="https://www.youtube.com/@h_ablankcanvas"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[12px] font-normal font-['Helvetica_Neue'] leading-[0.9] hover:opacity-70 transition-opacity"
+              >
+                h_ablankcanvas
+              </a>
             </div>
           </div>
         </div>
