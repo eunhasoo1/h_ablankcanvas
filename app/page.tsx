@@ -494,9 +494,10 @@ export default function Home() {
             preload="auto"
             controls={false}
           >
+            <source src="https://raw.githubusercontent.com/eunhasoo1/h_ablankcanvas/main/public/video/coloso.mp4" type="video/mp4" />
+            <source src="https://raw.githubusercontent.com/eunhasoo1/h_ablankcanvas/main/public/coloso.mp4" type="video/mp4" />
             <source src="/video/coloso.mp4" type="video/mp4" />
             <source src="/coloso.mp4" type="video/mp4" />
-            <source src="/video/coloso.mp4?v=2" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
