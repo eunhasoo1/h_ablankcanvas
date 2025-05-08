@@ -389,7 +389,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="flex items-center text-white text-sm uppercase tracking-wider group h-12 pb-2 px-4"
               >
-                <div className="flex items-center hover:bg-[#FEB902] transition-colors hover:text-[#1C1C1C] rounded-sm text-xs">
+                <div className="flex items-center hover:bg-[#FEB902] transition-colors hover:text-[#1C1C1C] text-xs">
                   INSTAGRAM 
                   <Instagram 
                     size={14} 
@@ -403,7 +403,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="flex items-center text-white text-sm uppercase tracking-wider group h-12 pb-2 px-4"
               >
-                <div className="flex items-center hover:bg-[#FEB902] transition-colors hover:text-[#1C1C1C] rounded-sm text-xs">
+                <div className="flex items-center hover:bg-[#FEB902] transition-colors hover:text-[#1C1C1C] text-xs">
                   YOUTUBE
                   <Youtube 
                     size={14} 
