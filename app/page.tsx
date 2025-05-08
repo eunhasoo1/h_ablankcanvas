@@ -491,8 +491,13 @@ export default function Home() {
             loop
             playsInline
             className="w-full h-full object-cover"
+            preload="auto"
+            controls={false}
           >
             <source src="/video/coloso.mp4" type="video/mp4" />
+            <source src="/coloso.mp4" type="video/mp4" />
+            <source src="/video/coloso.mp4?v=2" type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
         </div>
         
