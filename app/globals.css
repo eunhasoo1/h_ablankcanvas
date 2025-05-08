@@ -5,7 +5,7 @@
 /* globals.css or styles.css */
 /* globals.css or styles.css */
 html {
-  background-color: #ffffff; /* Set the fallback background color */
+  background-color: #FEB902; /* Overscroll background color */
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
   height: 100%; /* Ensure the html element is at least as tall as the viewport */
@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  background-color: #ffffff; /* Set the fallback background color */
+  background-color: #FEB902; /* Overscroll background color */
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
   height: 100%;
@@ -29,20 +29,37 @@ body {
 
 /* 커스텀 커서 스타일 */
 .cursor-play {
-  cursor: none;
+  cursor: none !important;
   position: relative;
+}
+
+/* Explicit default cursor for coloso section */
+.cursor-default-section {
+  cursor: default !important;
 }
 
 .custom-cursor-play {
   position: fixed;
   z-index: 9999;
   pointer-events: none;
+  font-family: 'Helvetica', sans-serif;
   font-weight: bold;
-  font-size: 50px;
-  color: #ffe100;
+  font-size: 40px;
+  color: #FEB902;
   transform: translate(-50%, -50%);
   transition: transform 0.1s ease;
   user-select: none;
+  letter-spacing: 0.5px;
+}
+
+/* Typing animation */
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.animate-blink {
+  animation: blink 0.8s infinite;
 }
 
 /* 
