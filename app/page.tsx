@@ -344,7 +344,7 @@ export default function Home() {
         onClick={goToYoutubeLink}
       >
         {/* Background Video */}
-        <div className="fixed inset-0 w-full h-full overflow-hidden bg-black z-0">
+        <div className="absolute inset-0 w-full h-full overflow-hidden bg-black z-0">
           {!isLoading && (
             <iframe
               className="absolute w-full h-full"
