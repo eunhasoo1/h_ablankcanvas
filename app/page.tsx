@@ -139,6 +139,20 @@ export default function Home() {
     // 비디오 데이터 가져오기
     const fetchVideoData = async () => {
       try {
+        // 먼저 localStorage에서 확인
+        const savedVideoString = localStorage.getItem('currentVideo');
+        if (savedVideoString) {
+          try {
+            const savedVideo = JSON.parse(savedVideoString);
+            setVideoData(savedVideo);
+            setIsLoading(false);
+            return;
+          } catch (e) {
+            console.error('저장된 비디오 데이터 파싱 오류:', e);
+          }
+        }
+        
+        // localStorage에 없으면 API에서 가져오기
         const timestamp = new Date().getTime();
         const res = await fetch(`/api/latest-video?t=${timestamp}`, {
           cache: 'no-store',
@@ -152,6 +166,8 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setVideoData(data);
+          // localStorage에도 저장
+          localStorage.setItem('currentVideo', JSON.stringify(data));
         }
       } catch (err) {
         console.error('Error fetching video data:', err);
