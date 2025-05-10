@@ -139,20 +139,7 @@ export default function Home() {
     // 비디오 데이터 가져오기
     const fetchVideoData = async () => {
       try {
-        // 먼저 localStorage에서 확인
-        const savedVideoString = localStorage.getItem('currentVideo');
-        if (savedVideoString) {
-          try {
-            const savedVideo = JSON.parse(savedVideoString);
-            setVideoData(savedVideo);
-            setIsLoading(false);
-            return;
-          } catch (e) {
-            console.error('저장된 비디오 데이터 파싱 오류:', e);
-          }
-        }
-        
-        // localStorage에 없으면 API에서 가져오기
+        // API에서 항상 최신 데이터 가져오기
         const timestamp = new Date().getTime();
         const res = await fetch(`/api/latest-video?t=${timestamp}`, {
           cache: 'no-store',
@@ -166,11 +153,32 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setVideoData(data);
-          // localStorage에도 저장
+          // 새 데이터를 localStorage에 저장
           localStorage.setItem('currentVideo', JSON.stringify(data));
+        } else {
+          // API 호출 실패 시 localStorage 데이터 사용
+          const savedVideoString = localStorage.getItem('currentVideo');
+          if (savedVideoString) {
+            try {
+              const savedVideo = JSON.parse(savedVideoString);
+              setVideoData(savedVideo);
+            } catch (e) {
+              console.error('저장된 비디오 데이터 파싱 오류:', e);
+            }
+          }
         }
       } catch (err) {
         console.error('Error fetching video data:', err);
+        // 에러 발생 시 localStorage 데이터 사용
+        const savedVideoString = localStorage.getItem('currentVideo');
+        if (savedVideoString) {
+          try {
+            const savedVideo = JSON.parse(savedVideoString);
+            setVideoData(savedVideo);
+          } catch (e) {
+            console.error('저장된 비디오 데이터 파싱 오류:', e);
+          }
+        }
       } finally {
         setIsLoading(false);
       }
@@ -362,24 +370,45 @@ export default function Home() {
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-black z-0">
           {!isLoading && (
-            <iframe
-              className="absolute w-full h-full"
-              src={`https://www.youtube-nocookie.com/embed/${videoData.videoId}?autoplay=1&mute=1&playsinline=1&loop=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${videoData.videoId}&vq=hd1080`}
-              title="Background video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              style={{
-                objectFit: 'cover',
-                pointerEvents: 'none',
-                width: '100vw',
-                height: '100vh',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: isMobile 
-                  ? 'translate(-50%, -50%) scale(4)'
-                  : 'translate(-50%, -50%) scale(1.2)',
-              }}
-            />
+            isMobile ? (
+              // 모바일 최적화 - 화면 전체를 채우는 레이아웃
+              <div className="absolute inset-0 overflow-hidden">
+                <iframe
+                  className="absolute w-full h-full"
+                  src={`https://www.youtube-nocookie.com/embed/${videoData.videoId}?autoplay=1&mute=1&playsinline=1&loop=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${videoData.videoId}&vq=hd1080`}
+                  title="Background video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  style={{
+                    position: 'absolute',
+                    width: '600%',
+                    height: '100%',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    objectFit: 'cover',
+                    pointerEvents: 'none'
+                  }}
+                />
+              </div>
+            ) : (
+              // 데스크톱 버전
+              <iframe
+                className="absolute w-full h-full"
+                src={`https://www.youtube-nocookie.com/embed/${videoData.videoId}?autoplay=1&mute=1&playsinline=1&loop=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${videoData.videoId}&vq=hd1080`}
+                title="Background video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                style={{
+                  objectFit: 'cover',
+                  pointerEvents: 'none',
+                  width: '100vw',
+                  height: '100vh',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%) scale(1.2)',
+                }}
+              />
+            )
           )}
         </div>
 
@@ -432,7 +461,7 @@ export default function Home() {
         </div>
 
         {/* Mobile Top Bar */}
-        <div className="md:hidden absolute top-0 left-0 right-0 h-12 bg-transparent border-b border-[#B1B0AD] flex items-center z-20"
+        <div className="md:hidden absolute top-0 left-0 right-0 h-12 bg-[#edece5] border-b border-[#B1B0AD] flex items-center z-20"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Logo */}
@@ -445,12 +474,12 @@ export default function Home() {
           
           {/* Social Links - Right side on mobile */}
           <div className="flex items-center justify-end flex-1 h-full">
-            <div className="bg-[#edece5] h-full flex items-center px-2">
+            <div className="bg-[#edece5] h-full flex items-center px-1">
               <a 
                 href="https://www.instagram.com/h_ablankcanvas/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center text-[#1C1C1C] px-3 h-full"
+                className="flex items-center text-[#1C1C1C] px-2 h-full"
               >
                 <Instagram size={16} />
               </a>
@@ -458,7 +487,7 @@ export default function Home() {
                 href="https://www.youtube.com/@h_ablankcanvas" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center text-[#1C1C1C] px-3 h-full"
+                className="flex items-center text-[#1C1C1C] px-2 h-full"
               >
                 <Youtube size={16} />
               </a>
