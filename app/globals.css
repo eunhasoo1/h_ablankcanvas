@@ -72,5 +72,25 @@ body {
   overflow-x: hidden;
 } */
 
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.marquee-container {
+  overflow: hidden;
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 60s linear infinite;
+}
+
 
 

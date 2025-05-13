@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Instagram, Youtube } from 'lucide-react';
+import Marquee from './components/Marquee';
 
 // Media query hook
 function useMediaQuery(query: string) {
@@ -32,7 +33,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [needSmthOpen, setNeedSmthOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
-
+  
   useEffect(() => {
     // Fetch the latest video ID
     const fetchVideoData = async () => {
@@ -107,25 +108,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Only keep animation styles */}
-      <style jsx global>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-100%); }
-        }
-        
-        .animate-marquee {
-          display: inline-block;
-          width: max-content;
-          animation: marquee 120s linear infinite;
-        }
-        
-        .marquee-content {
-          display: flex;
-          width: max-content;
-        }
-      `}</style>
-
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white z-50 border-b border-gray-600">
         <div className="flex justify-between items-center px-5 py-3 w-full">
@@ -323,20 +305,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="md:pt-16 pt-14 pb-20 w-full">
         {/* Marquee Banner */}
-        <div className="marquee-container overflow-hidden w-full py-2">
-          <div className="marquee-content whitespace-nowrap animate-marquee">
-            <Link 
-              href={`https://www.youtube.com/watch?v=${videoId}`}
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-black hover:text-gray-500 transition-colors"
-            >
-              <span className="uppercase text-lg md:text-xl font-normal">
-                NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp; NEW VIDEO UP NOW! [{videoTitle}] &nbsp;&nbsp;&nbsp;
-              </span>
-            </Link>
-          </div>
-        </div>
+        <Marquee videoId={videoId} videoTitle={videoTitle} />
         
         {/* Gallery Section - Full Width */}
         <div className="w-full">
