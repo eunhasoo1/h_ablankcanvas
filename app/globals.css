@@ -5,7 +5,7 @@
 /* globals.css or styles.css */
 /* globals.css or styles.css */
 html {
-  background-color: #FEB902; /* Overscroll background color */
+  background-color: #FFFFFF; /* Overscroll background color */
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
   height: 100%; /* Ensure the html element is at least as tall as the viewport */
@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  background-color: #FEB902; /* Overscroll background color */
+  background-color: #FFFFFF; /* Overscroll background color */
   margin: 0; /* Reset default margin */
   padding: 0; /* Reset default padding */
   height: 100%;
