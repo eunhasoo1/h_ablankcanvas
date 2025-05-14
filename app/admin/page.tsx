@@ -106,6 +106,8 @@ export default function AdminPage() {
       localStorage.setItem('currentVideo', JSON.stringify(newVideoData));
       setCurrentVideo(newVideoData);
       setMessage({ text: '최신 영상을 성공적으로 가져왔습니다.', type: 'success' });
+      
+      // Refresh the current page
       router.refresh();
       
     } catch (error) {
@@ -183,7 +185,10 @@ export default function AdminPage() {
       setCurrentVideo(newVideoData);
       setMessage({ text: 'Video successfully updated.', type: 'success' });
       setVideoUrl('');
+      
+      // Refresh the current page
       router.refresh();
+      
     } catch (error) {
       setMessage({ text: 'Error occurred while updating the video.', type: 'error' });
     } finally {

@@ -3,8 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Instagram, Youtube } from 'lucide-react';
+import { Instagram, Youtube } from 'lucide-react';
 import Marquee from './components/Marquee';
+import Navbar from './components/Navbar';
+import NeedSmthMenu from './components/NeedSmthMenu';
+import Footer from './components/Footer';
 
 // Media query hook
 function useMediaQuery(query: string) {
@@ -38,6 +41,21 @@ export default function Home() {
     // Fetch the latest video ID
     const fetchVideoData = async () => {
       try {
+        // First try to get the data from localStorage
+        const savedVideoString = localStorage.getItem('currentVideo');
+        if (savedVideoString) {
+          try {
+            const savedVideo = JSON.parse(savedVideoString);
+            setVideoId(savedVideo.videoId);
+            setVideoTitle(savedVideo.title || 'Latest Animation Process');
+            setLoading(false);
+            return; // Exit early if we successfully got data from localStorage
+          } catch (e) {
+            console.error('Saved video data parsing error:', e);
+          }
+        }
+
+        // If localStorage fails or is empty, try the API
         const timestamp = new Date().getTime();
         const res = await fetch(`/api/latest-video?t=${timestamp}`, {
           cache: 'no-store',
@@ -54,29 +72,19 @@ export default function Home() {
           setVideoTitle(data.title || 'Latest Animation Process');
           localStorage.setItem('currentVideo', JSON.stringify(data));
         } else {
-          const savedVideoString = localStorage.getItem('currentVideo');
-          if (savedVideoString) {
-            try {
-              const savedVideo = JSON.parse(savedVideoString);
-              setVideoId(savedVideo.videoId);
-              setVideoTitle(savedVideo.title || 'Latest Animation Process');
-            } catch (e) {
-              console.error('Saved video data parsing error:', e);
-            }
-          }
+          // If API fails, use a default video
+          const defaultVideo = {
+            videoId: 'uLJ_EWGvJzk',
+            title: 'Latest Animation Process'
+          };
+          setVideoId(defaultVideo.videoId);
+          setVideoTitle(defaultVideo.title);
         }
       } catch (err) {
         console.error('Error fetching video data:', err);
-        const savedVideoString = localStorage.getItem('currentVideo');
-        if (savedVideoString) {
-          try {
-            const savedVideo = JSON.parse(savedVideoString);
-            setVideoId(savedVideo.videoId);
-            setVideoTitle(savedVideo.title || 'Latest Animation Process');
-          } catch (e) {
-            console.error('Saved video data parsing error:', e);
-          }
-        }
+        // Set default values if everything fails
+        setVideoId('uLJ_EWGvJzk');
+        setVideoTitle('Latest Animation Process');
       } finally {
         setLoading(false);
       }
@@ -96,11 +104,6 @@ export default function Home() {
     };
   }, [menuOpen, needSmthOpen]);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-    if (needSmthOpen) setNeedSmthOpen(false);
-  };
-  
   const toggleNeedSmth = () => {
     setNeedSmthOpen(!needSmthOpen);
     if (menuOpen) setMenuOpen(false);
@@ -108,199 +111,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white z-50 border-b border-gray-600">
-        <div className="flex justify-between items-center px-5 py-3 w-full">
-          <div className="flex-shrink-0">
-            {/* Logo */}
-            <Link href="/" className="text-lg md:text-xl font-bold">
-              <div className="leading-none">
-              <div>HA-</div>
-              <div>EUN</div>
-              </div>
-            </Link>
-          </div>
-          
-          {/* Center Nav Items - Centered */}
-          <nav className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 gap-8">
-            <Link href="/" className="uppercase text-sm font-normal hover:text-gray-500 transition-colors">
-              HOME
-            </Link>
-            <Link href="/the-blank-gallery" className="uppercase text-sm font-normal hover:text-gray-500 transition-colors">
-              THE BLANK GALLERY
-            </Link>
-            <button 
-              onClick={toggleNeedSmth}
-              className="uppercase text-sm font-normal hover:text-gray-500 transition-colors background-transparent border-none cursor-pointer"
-            >
-              NEED SMTH?
-            </button>
-          </nav>
-                
-          {/* Mobile menu button */}
-          <button 
-            className="uppercase text-xs font-light flex items-center gap-2 flex-shrink-0"
-            onClick={needSmthOpen ? toggleNeedSmth : toggleMenu}
-            aria-label={menuOpen || needSmthOpen ? 'Close menu' : 'Open menu'}
-          >
-            {menuOpen || needSmthOpen ? (
-              <>
-                Close <X size={14} />
-              </>
-            ) : (
-              <>
-                Menu <Menu size={14} />
-              </>
-            )}
-          </button>
-        </div>
-      </header>
-      
-      {/* Menu Overlay */}
-      <div 
-        className={`fixed inset-0 bg-white z-40 transition-transform duration-500 ease-in-out transform ${
-          menuOpen ? 'translate-y-0' : '-translate-y-full'
-        } overflow-y-auto`}
-        style={{ paddingTop: 'calc(1rem + 42px)' }}
-      >
-        <div className="max-w-full px-5 py-10">
-          
-          <nav className="space-y-14 mb-20">
-            <Link 
-              href="/" 
-              className="block group"
-              onClick={() => setMenuOpen(false)}
-            >
-              <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
-                HOME
-              </h3>
-            </Link>
-            
-            <Link 
-              href="/the-blank-gallery" 
-              className="block group"
-              onClick={() => setMenuOpen(false)}
-            >
-              <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
-                THE BLANK GALLERY
-              </h3>
-            </Link>
-            
-            <button 
-              onClick={toggleNeedSmth}
-              className="block group w-full text-left border-none bg-transparent"
-            >
-              <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
-                NEED SMTH?
-              </h3>
-            </button>
-          </nav>
-          
-          <div className="pt-8">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="https://www.instagram.com/h_ablankcanvas/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black hover:text-gray-500 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
-              </Link>
-              <Link 
-                href="https://www.youtube.com/@h_ablankcanvas"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black hover:text-gray-500 transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube size={20} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Navbar */}
+      <Navbar toggleNeedSmth={toggleNeedSmth} needSmthOpen={needSmthOpen} />
       
       {/* Need Smth Overlay */}
-      <div 
-        className={`fixed inset-0 bg-white z-40 transition-transform duration-500 ease-in-out transform ${
-          needSmthOpen ? 'translate-y-0' : '-translate-y-full'
-        } overflow-y-auto`}
-        style={{ paddingTop: 'calc(1rem + 42px)' }}
-      >
-        <div className="max-w-full px-5 py-10">
-          <h2 className="text-sm mb-12 font-light text-gray-500">
-            What do you need?
-          </h2>
-          
-          <nav className="space-y-14 mb-20">
-            <Link 
-              href="https://www.youtube.com/@h_ablankcanvas" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block group"
-            >
-              <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
-                PROCESS VIDEOS
-              </h3>
-              <p className="text-sm font-light text-gray-600">
-                My workflow, from start to finish.
-              </p>
-            </Link>
-            
-            <Link 
-              href="https://bit.ly/4dDyZvR" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block group"
-            >
-              <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
-                ANIMATION COURSE (KR)
-              </h3>
-              <p className="text-sm font-light text-gray-600">
-                Your characters, brought to life
-              </p>
-            </Link>
-            
-            <Link 
-              href="https://chatflix.app" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block group"
-            >
-              <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
-                MY GO-TO AI
-              </h3>
-              <p className="text-sm font-light text-gray-600">
-                The ultimate LLM collection
-              </p>
-            </Link>
-          </nav>
-          
-          <div className="pt-8">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="https://www.instagram.com/h_ablankcanvas/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black hover:text-gray-500 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
-              </Link>
-              <Link 
-                href="https://www.youtube.com/@h_ablankcanvas"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black hover:text-gray-500 transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube size={20} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <NeedSmthMenu isOpen={needSmthOpen} />
       
       {/* Main Content */}
       <main className="md:pt-16 pt-14 pb-20 w-full">
@@ -408,33 +223,8 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer - Full Width */}
-      <footer className="w-full border-t border-gray-600 py-8 px-5">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-          <div className="flex gap-6 mb-4 md:mb-0">
-            <Link 
-              href="https://www.instagram.com/h_ablankcanvas/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black hover:text-gray-500 transition-colors text-xs uppercase"
-            >
-              Instagram
-            </Link>
-            <Link 
-              href="https://www.youtube.com/@h_ablankcanvas"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black hover:text-gray-500 transition-colors text-xs uppercase"
-            >
-              YouTube
-            </Link>
-          </div>
-          
-          <div className="text-xs text-gray-500 font-light">
-            © {new Date().getFullYear()} HABLANKCANVAS. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
