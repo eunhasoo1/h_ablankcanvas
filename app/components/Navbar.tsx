@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Instagram, Youtube, Settings } from 'lucide-react';
+import { Menu, X, Instagram, Youtube } from 'lucide-react';
 
 interface NavbarProps {
   toggleNeedSmth?: () => void;
@@ -124,13 +124,6 @@ export default function Navbar({ toggleNeedSmth, needSmthOpen }: NavbarProps) {
                 aria-label="YouTube"
               >
                 <Youtube size={20} />
-              </Link>
-              <Link 
-                href="/admin"
-                className="text-black hover:text-gray-500 transition-colors"
-                aria-label="Admin"
-              >
-                <Settings size={18} />
               </Link>
             </div>
           </div>

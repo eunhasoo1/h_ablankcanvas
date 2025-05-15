@@ -186,7 +186,7 @@ export default function Home() {
               >
                 <h3 className="uppercase text-xl md:text-3xl font-normal">MY GO-TO AI</h3>
                 <p className="text-sm md:text-base font-light text-gray-600 mb-4">
-                  If there's an 'everyday carry software', this is mine.
+                  The Ultimate LLM Collection
                 </p>
                 <span className="uppercase text-xs font-light inline-block group-hover:text-gray-500 transition-colors">
                   <span className="border-b border-black pb-1">Explore Now</span>

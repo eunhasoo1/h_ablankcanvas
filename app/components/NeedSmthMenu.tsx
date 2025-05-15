@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Instagram, Youtube, Settings } from 'lucide-react';
+import { Instagram, Youtube } from 'lucide-react';
 
 interface NeedSmthMenuProps {
   isOpen: boolean;
@@ -82,13 +82,6 @@ export default function NeedSmthMenu({ isOpen }: NeedSmthMenuProps) {
               aria-label="YouTube"
             >
               <Youtube size={20} />
-            </Link>
-            <Link 
-              href="/admin"
-              className="text-black hover:text-gray-500 transition-colors"
-              aria-label="Admin"
-            >
-              <Settings size={18} />
             </Link>
           </div>
         </div>
