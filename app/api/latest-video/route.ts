@@ -1,17 +1,21 @@
 import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 
 // This endpoint returns the latest YouTube video from our channel
 export async function GET() {
   try {
-    // In a real scenario, we would fetch this from a database
-    // or directly from YouTube API, but since we're using localStorage
-    // on the client side for simplicity, we'll just return a default response
-    // that will be overridden by localStorage data if available
-    return NextResponse.json({
-      videoId: 'uLJ_EWGvJzk',
-      title: 'Latest Animation Process',
-      lastUpdated: new Date().toISOString()
-    });
+    const filePath = path.join(process.cwd(), 'latest_video.json');
+    if (fs.existsSync(filePath)) {
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      const data = JSON.parse(fileContents);
+      return NextResponse.json(data);
+    } else {
+      return NextResponse.json({
+        videoId: 'uLJ_EWGvJzk',
+        title: 'Latest Animation Process',
+      });
+    }
   } catch (error) {
     console.error('Error fetching latest video:', error);
     return new NextResponse(JSON.stringify({ error: 'Failed to fetch latest video' }), {
