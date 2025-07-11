@@ -120,7 +120,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="md:pt-16 pt-14 pb-20 w-full">
         {/* Marquee Banner */}
-        <Marquee videoId={videoId} videoTitle={videoTitle} />
+        {/* <Marquee videoId={videoId} videoTitle={videoTitle} /> */}
         
         {/* Gallery Section - Full Width */}
         <div className="w-full">

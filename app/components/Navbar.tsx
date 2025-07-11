@@ -35,9 +35,9 @@ export default function Navbar({ toggleNeedSmth, needSmthOpen }: NavbarProps) {
             <Link href="/" className="uppercase text-sm font-normal hover:text-gray-500 transition-colors">
               HOME
             </Link>
-            <Link href="/the-blank-gallery" className="uppercase text-sm font-normal hover:text-gray-500 transition-colors">
+            {/* <Link href="/the-blank-gallery" className="uppercase text-sm font-normal hover:text-gray-500 transition-colors">
               THE BLANK GALLERY
-            </Link>
+            </Link> */}
             <button 
               onClick={toggleNeedSmth || toggleMenu}
               className="uppercase text-sm font-normal hover:text-gray-500 transition-colors background-transparent border-none cursor-pointer"
@@ -85,7 +85,7 @@ export default function Navbar({ toggleNeedSmth, needSmthOpen }: NavbarProps) {
               </h3>
             </Link>
             
-            <Link 
+            {/* <Link 
               href="/the-blank-gallery" 
               className="block group"
               onClick={() => setMenuOpen(false)}
@@ -93,7 +93,7 @@ export default function Navbar({ toggleNeedSmth, needSmthOpen }: NavbarProps) {
               <h3 className="text-2xl md:text-5xl font-light mb-2 hover:text-gray-500 transition-colors">
                 THE BLANK GALLERY
               </h3>
-            </Link>
+            </Link> */}
             
             <button 
               onClick={toggleNeedSmth || toggleMenu}
