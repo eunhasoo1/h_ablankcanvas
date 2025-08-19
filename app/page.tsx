@@ -30,6 +30,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const arrowButtonRef = useRef<HTMLButtonElement>(null);
   const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
 
   useEffect(() => {
@@ -208,17 +209,7 @@ export default function Home() {
 
       if (showArrow) {
         e.preventDefault();
-        if (showArrow === 'haeun_action') {
-          showHaeunBubbles();
-        } else {
-          const link = document.createElement('a');
-          link.href = showArrow;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
+        arrowButtonRef.current?.click();
         return;
       }
     }
@@ -373,7 +364,7 @@ export default function Home() {
             <span style={{ color: '#ccc' }}>{suggestion}</span>
           )}
           {showArrow && (
-             <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+             <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
              </button>
           )}
@@ -397,7 +388,7 @@ export default function Home() {
           </span>
           <span>{afterSelection}</span>
           {showArrow && (
-            <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+            <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </button>
           )}
