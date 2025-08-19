@@ -31,7 +31,7 @@ export default function Home() {
   const [linkImageSrc, setLinkImageSrc] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const arrowButtonRef = useRef<HTMLButtonElement>(null);
+  const arrowButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
   const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
 
   useEffect(() => {
@@ -361,7 +361,7 @@ export default function Home() {
           )}
           {showArrow && (
             showArrow === 'haeun_action' ? (
-              <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+              <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
             ) : (
@@ -391,7 +391,7 @@ export default function Home() {
           <span>{afterSelection}</span>
           {showArrow && (
             showArrow === 'haeun_action' ? (
-              <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+              <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
             ) : (
