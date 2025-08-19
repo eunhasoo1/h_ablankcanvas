@@ -330,13 +330,21 @@ export default function Home() {
       if (showArrow === 'haeun_action') {
         showHaeunBubbles();
       } else {
-        const link = document.createElement('a');
-        link.href = showArrow;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const isBitlyLink = showArrow.includes('bit.ly');
+        
+        if (isMobile && isBitlyLink) {
+          // On mobile, open bit.ly links in the current tab
+          window.location.href = showArrow;
+        } else {
+          // On desktop, or for non-bit.ly links on mobile, open in a new tab
+          const link = document.createElement('a');
+          link.href = showArrow;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       }
     }
   };
