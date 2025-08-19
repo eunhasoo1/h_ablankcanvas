@@ -27,6 +27,7 @@ export default function Home() {
   const [selectionEnd, setSelectionEnd] = useState(0);
   const [showArrow, setShowArrow] = useState<string | null>(null);
   const [suggestion, setSuggestion] = useState<string>('');
+  const [isMobile, setIsMobile] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
@@ -34,7 +35,17 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => setDateTime(new Date()), 1000);
     textareaRef.current?.focus();
-    return () => clearInterval(timer);
+
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('resize', checkIsMobile);
+    };
   }, []);
 
   const formatDate = (date: Date) => {
@@ -48,7 +59,7 @@ export default function Home() {
   };
 
   const showHaeunBubbles = () => {
-    const margin = 150; // Margin from the window edges
+    const margin = isMobile ? 50 : 150; // Margin from the window edges
     const minDistance = 100; // Minimum distance between bubbles
     const newBubbles: { id: number; x: number; y: number; text: string; delay: number; size: number }[] = [];
 
@@ -64,10 +75,12 @@ export default function Home() {
 
     for (let i = 0; i < 10; i++) {
       let x, y, size;
+      let attempts = 0;
       do {
         x = Math.random() * (window.innerWidth - margin * 2) + margin;
         y = Math.random() * (window.innerHeight - margin * 2) + margin;
         size = Math.random() * 0.5 + 0.8;
+        if (++attempts > 100) break; // Safety break to prevent infinite loops
       } while (isOverlapping(x, y, size));
 
       const text = Math.random() < 0.5 ? "that's me!" : "Hi!";
@@ -80,13 +93,47 @@ export default function Home() {
         size,
       });
     }
-    
+
     setBubbles(newBubbles);
 
     setTimeout(() => {
       setBubbles([]);
     }, 3000);
   }
+
+  const completeSuggestion = () => {
+    if (!suggestion) return;
+
+    const newContent = content + suggestion;
+    setContent(newContent);
+    setCursorPosition(newContent.length);
+    setSelectionStart(newContent.length);
+    setSelectionEnd(newContent.length);
+    setSuggestion('');
+
+    // Check if completed keyword has a link
+    const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
+    const isExactMatch = (keyword: string, input: string) => {
+      if (hasKorean(keyword) || hasKorean(input)) {
+        return keyword === input;
+      } else {
+        return keyword.toLowerCase() === input.toLowerCase();
+      }
+    };
+
+    const exactMatch = Object.keys(keywordLinks).find(keyword =>
+      isExactMatch(keyword, newContent.trim())
+    );
+    if (exactMatch) {
+      setShowArrow(keywordLinks[exactMatch]);
+    }
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.setSelectionRange(newContent.length, newContent.length);
+      }
+    }, 0);
+  };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
@@ -97,10 +144,10 @@ export default function Home() {
     setIsTyping(true);
 
     const trimmedContent = newContent.trim();
-    
+
     // Helper function to check if string contains Korean characters
     const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
-    
+
     // Helper function for comparison (case insensitive for English, exact for Korean)
     const isMatch = (keyword: string, input: string, exact: boolean = true) => {
       if (hasKorean(keyword) || hasKorean(input)) {
@@ -109,24 +156,24 @@ export default function Home() {
         return exact ? keyword.toLowerCase() === input.toLowerCase() : keyword.toLowerCase().startsWith(input.toLowerCase());
       }
     };
-    
+
     // Check for exact match
-    const exactMatch = Object.keys(keywordLinks).find(keyword => 
+    const exactMatch = Object.keys(keywordLinks).find(keyword =>
       isMatch(keyword, trimmedContent, true)
     );
-    
+
     if (exactMatch) {
       setShowArrow(keywordLinks[exactMatch]);
       setSuggestion('');
     } else {
       setShowArrow(null);
-      
+
       // Find matching keywords for autocomplete
       if (trimmedContent.length > 0) {
-        const matchingKeyword = Object.keys(keywordLinks).find(keyword => 
+        const matchingKeyword = Object.keys(keywordLinks).find(keyword =>
           isMatch(keyword, trimmedContent, false) && !isMatch(keyword, trimmedContent, true)
         );
-        
+
         if (matchingKeyword) {
           setSuggestion(matchingKeyword.substring(trimmedContent.length));
         } else {
@@ -136,12 +183,12 @@ export default function Home() {
         setSuggestion('');
       }
     }
-    
+
     // Clear existing timeout
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    
+
     // Set new timeout to stop typing state after 0.2 second
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false);
@@ -152,49 +199,34 @@ export default function Home() {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    if (showArrow && e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      e.preventDefault();
-      if (showArrow === 'haeun_action') {
-        showHaeunBubbles();
-      } else {
-        window.open(showArrow, '_blank');
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      if (isMobile && suggestion) {
+        e.preventDefault();
+        completeSuggestion();
+        return;
       }
-      return;
+
+      if (showArrow) {
+        e.preventDefault();
+        if (showArrow === 'haeun_action') {
+          showHaeunBubbles();
+        } else {
+          const link = document.createElement('a');
+          link.href = showArrow;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        return;
+      }
     }
 
     // Handle Tab for autocomplete
     if (e.key === 'Tab' && suggestion && !e.nativeEvent.isComposing) {
       e.preventDefault();
-      const newContent = content + suggestion;
-      setContent(newContent);
-      setCursorPosition(newContent.length);
-      setSelectionStart(newContent.length);
-      setSelectionEnd(newContent.length);
-      setSuggestion('');
-      
-      // Check if completed keyword has a link
-      const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
-      const isExactMatch = (keyword: string, input: string) => {
-        if (hasKorean(keyword) || hasKorean(input)) {
-          return keyword === input;
-        } else {
-          return keyword.toLowerCase() === input.toLowerCase();
-        }
-      };
-      
-      const exactMatch = Object.keys(keywordLinks).find(keyword => 
-        isExactMatch(keyword, newContent.trim())
-      );
-      if (exactMatch) {
-        setShowArrow(keywordLinks[exactMatch]);
-      }
-      
-      // Let React handle the state update, avoid direct DOM manipulation
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.setSelectionRange(newContent.length, newContent.length);
-        }
-      }, 0);
+      completeSuggestion();
       return;
     }
 
@@ -221,12 +253,12 @@ export default function Home() {
       textarea.value = newContent;
       textarea.setSelectionRange(start, start);
       setIsTyping(true);
-      
+
       // Clear existing timeout
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-      
+
       // Set new timeout to stop typing state after 0.2 second
       typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
@@ -237,7 +269,7 @@ export default function Home() {
     // Handle arrow keys
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
-      
+
       setIsTyping(true);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
@@ -247,7 +279,7 @@ export default function Home() {
       }, 200);
 
       let newPosition = cursorPosition;
-      
+
       if (e.key === 'ArrowLeft' && newPosition > 0) {
         newPosition--;
       } else if (e.key === 'ArrowRight' && newPosition < content.length) {
@@ -269,7 +301,7 @@ export default function Home() {
         const beforeCursor = content.substring(0, newPosition);
         const afterCursor = content.substring(newPosition);
         const currentLineEnd = afterCursor.indexOf('\n');
-        
+
         if (currentLineEnd !== -1) {
           const lines = beforeCursor.split('\n');
           const currentColumn = lines[lines.length - 1].length;
@@ -297,14 +329,24 @@ export default function Home() {
         setSelectionEnd(newPosition);
         textarea.setSelectionRange(newPosition, newPosition);
       }
-      
+
       setCursorPosition(newPosition);
     }
   };
 
   const handleArrowClick = () => {
     if (showArrow) {
-      window.open(showArrow, '_blank');
+      if (showArrow === 'haeun_action') {
+        showHaeunBubbles();
+      } else {
+        const link = document.createElement('a');
+        link.href = showArrow;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     }
   };
 
@@ -321,7 +363,7 @@ export default function Home() {
       // No selection, just render text with cursor
       const beforeCursor = content.substring(0, cursorPosition);
       const afterCursor = content.substring(cursorPosition);
-      
+
       return (
         <div className="flex items-center justify-center">
           <span>{beforeCursor}</span>
@@ -342,12 +384,12 @@ export default function Home() {
       const beforeSelection = content.substring(0, start);
       const selectedText = content.substring(start, end);
       const afterSelection = content.substring(end);
-      
+
       return (
         <div className="flex items-center justify-center">
           <span>{beforeSelection}</span>
-          <span 
-            style={{ 
+          <span
+            style={{
               backgroundColor: 'rgba(255, 0, 0, 0.2)',
             }}
           >
@@ -372,14 +414,15 @@ export default function Home() {
   };
 
   return (
-    <main 
-      className="min-h-screen bg-white text-black flex items-center justify-center relative cursor-text"
+    <main
+      className="h-dvh bg-white text-black flex items-center justify-center relative cursor-text"
       onClick={handleClick}
+      onTouchStart={handleClick}
     >
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
         <Image src="/image/pin.png" alt="Pin" width={40} height={40} />
             </div>
-            
+
       <div className="w-full max-w-4xl p-8 text-center -mt-80">
         <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
           {renderTextWithSelection()}
@@ -393,7 +436,7 @@ export default function Home() {
           autoFocus
         />
             </div>
-      
+
       <div className="absolute bottom-4 right-8 font-marydale text-sm">
         {formatDate(dateTime)}
         </div>
