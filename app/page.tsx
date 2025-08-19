@@ -425,10 +425,10 @@ export default function Home() {
   };
 
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-    // Check if the click target or its parent is an anchor tag.
+    // Check if the click target or its parent is an anchor tag or a link image.
     let target = e.target as HTMLElement;
     while (target && target.tagName !== 'BODY') {
-      if (target.tagName === 'A') {
+      if (target.tagName === 'A' || target.closest('[data-link-image]')) {
         // If it's a link, let the default browser action happen and don't focus the textarea.
         return;
       }
@@ -454,9 +454,13 @@ export default function Home() {
             {renderTextWithSelection()}
           </div>
           {linkImageSrc && (
-            <a href={showArrow!} target="_blank" rel="noopener noreferrer" className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4">
+            <div 
+              onClick={handleArrowClick}
+              data-link-image="true"
+              className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 cursor-pointer"
+            >
               <Image src={linkImageSrc} alt="Link image" width={150} height={150} className="rounded-lg" />
-            </a>
+            </div>
           )}
         </div>
         <textarea
