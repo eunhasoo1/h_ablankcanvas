@@ -20,7 +20,16 @@ const config: Config = {
       fontSize: {
         xxxs: '0.4rem',
         xxs: '0.5rem'
-      }
+      },
+      animation: {
+        'caret-blink': 'caret-blink 1.2s ease-out infinite',
+      },
+      keyframes: {
+        'caret-blink': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        },
+      },
     },
   },
   plugins: [],

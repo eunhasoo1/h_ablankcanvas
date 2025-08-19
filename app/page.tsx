@@ -1,231 +1,418 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Instagram, Youtube } from 'lucide-react';
-import Marquee from './components/Marquee';
-import Navbar from './components/Navbar';
-import NeedSmthMenu from './components/NeedSmthMenu';
-import Footer from './components/Footer';
 
-// Media query hook
-function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState(false);
+const keywordLinks: { [key: string]: string } = {
+  'haeun': 'haeun_action',
+  'coloso': 'https://bit.ly/4dDyZvR',
+  '콜로소': 'https://bit.ly/4dDyZvR',
+  'course': 'https://bit.ly/4dDyZvR',
+  'timelapse': 'https://www.youtube.com/@hablankcanvas_data',
+  'process': 'https://www.youtube.com/@hablankcanvas_data',
+  'youtube timelapse': 'https://www.youtube.com/@hablankcanvas_data',
+  '타임랩스': 'https://www.youtube.com/@hablankcanvas_data',
+  '과정 영상': 'https://www.youtube.com/@hablankcanvas_data',
+  'chatflix': 'https://www.chatflix.app',
+  'ai': 'https://www.chatflix.app',
+  'llm': 'https://www.chatflix.app',
+};
+
+export default function Home() {
+  const [dateTime, setDateTime] = useState(new Date());
+  const [content, setContent] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const [selectionStart, setSelectionStart] = useState(0);
+  const [selectionEnd, setSelectionEnd] = useState(0);
+  const [showArrow, setShowArrow] = useState<string | null>(null);
+  const [suggestion, setSuggestion] = useState<string>('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
 
   useEffect(() => {
-    const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
+    const timer = setInterval(() => setDateTime(new Date()), 1000);
+    textareaRef.current?.focus();
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}. ${month}. ${day}. ${hours}:${minutes}:${seconds}`;
+  };
+
+  const showHaeunBubbles = () => {
+    const margin = 150; // Margin from the window edges
+    const minDistance = 100; // Minimum distance between bubbles
+    const newBubbles: { id: number; x: number; y: number; text: string; delay: number; size: number }[] = [];
+
+    const isOverlapping = (x: number, y: number, size: number) => {
+      for (const bubble of newBubbles) {
+        const distance = Math.sqrt(Math.pow(x - bubble.x, 2) + Math.pow(y - bubble.y, 2));
+        if (distance < minDistance) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    for (let i = 0; i < 10; i++) {
+      let x, y, size;
+      do {
+        x = Math.random() * (window.innerWidth - margin * 2) + margin;
+        y = Math.random() * (window.innerHeight - margin * 2) + margin;
+        size = Math.random() * 0.5 + 0.8;
+      } while (isOverlapping(x, y, size));
+
+      const text = Math.random() < 0.5 ? "that's me!" : "Hi!";
+      newBubbles.push({
+        id: Date.now() + i,
+        x,
+        y,
+        text,
+        delay: i * 100,
+        size,
+      });
     }
     
-    const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
+    setBubbles(newBubbles);
+
+    setTimeout(() => {
+      setBubbles([]);
+    }, 3000);
+  }
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value;
+    setContent(newContent);
+    setCursorPosition(e.target.selectionStart || 0);
+    setSelectionStart(e.target.selectionStart || 0);
+    setSelectionEnd(e.target.selectionEnd || 0);
+    setIsTyping(true);
+
+    const trimmedContent = newContent.trim();
     
-    return () => media.removeEventListener('change', listener);
-  }, [matches, query]);
-
-  return matches;
-}
-
-// Import font styles in next/head
-export default function Home() {
-  const [videoId, setVideoId] = useState('uLJ_EWGvJzk');
-  const [videoTitle, setVideoTitle] = useState('Latest Animation Process');
-  const [loading, setLoading] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [needSmthOpen, setNeedSmthOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  
-  useEffect(() => {
-    // Fetch the latest video ID
-    const fetchVideoData = async () => {
-      try {
-        // First try to get the data from localStorage
-        const savedVideoString = localStorage.getItem('currentVideo');
-        if (savedVideoString) {
-          try {
-            const savedVideo = JSON.parse(savedVideoString);
-            setVideoId(savedVideo.videoId);
-            setVideoTitle(savedVideo.title || 'Latest Animation Process');
-            setLoading(false);
-            return; // Exit early if we successfully got data from localStorage
-          } catch (e) {
-            console.error('Saved video data parsing error:', e);
-          }
-        }
-
-        // If localStorage fails or is empty, try the API
-        const timestamp = new Date().getTime();
-        const res = await fetch(`/api/latest-video?t=${timestamp}`, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          setVideoId(data.videoId);
-          setVideoTitle(data.title || 'Latest Animation Process');
-          localStorage.setItem('currentVideo', JSON.stringify(data));
-        } else {
-          // If API fails, use a default video
-          const defaultVideo = {
-            videoId: 'uLJ_EWGvJzk',
-            title: 'Latest Animation Process'
-          };
-          setVideoId(defaultVideo.videoId);
-          setVideoTitle(defaultVideo.title);
-        }
-      } catch (err) {
-        console.error('Error fetching video data:', err);
-        // Set default values if everything fails
-        setVideoId('uLJ_EWGvJzk');
-        setVideoTitle('Latest Animation Process');
-      } finally {
-        setLoading(false);
+    // Helper function to check if string contains Korean characters
+    const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
+    
+    // Helper function for comparison (case insensitive for English, exact for Korean)
+    const isMatch = (keyword: string, input: string, exact: boolean = true) => {
+      if (hasKorean(keyword) || hasKorean(input)) {
+        return exact ? keyword === input : keyword.startsWith(input);
+      } else {
+        return exact ? keyword.toLowerCase() === input.toLowerCase() : keyword.toLowerCase().startsWith(input.toLowerCase());
       }
     };
-
-    fetchVideoData();
     
-    // Prevent scroll when menu or needSmth is open
-    if (menuOpen || needSmthOpen) {
-      document.body.style.overflow = 'hidden';
+    // Check for exact match
+    const exactMatch = Object.keys(keywordLinks).find(keyword => 
+      isMatch(keyword, trimmedContent, true)
+    );
+    
+    if (exactMatch) {
+      setShowArrow(keywordLinks[exactMatch]);
+      setSuggestion('');
     } else {
-      document.body.style.overflow = '';
+      setShowArrow(null);
+      
+      // Find matching keywords for autocomplete
+      if (trimmedContent.length > 0) {
+        const matchingKeyword = Object.keys(keywordLinks).find(keyword => 
+          isMatch(keyword, trimmedContent, false) && !isMatch(keyword, trimmedContent, true)
+        );
+        
+        if (matchingKeyword) {
+          setSuggestion(matchingKeyword.substring(trimmedContent.length));
+        } else {
+          setSuggestion('');
+        }
+      } else {
+        setSuggestion('');
+      }
     }
     
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [menuOpen, needSmthOpen]);
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    
+    // Set new timeout to stop typing state after 0.2 second
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 200);
+  };
 
-  const toggleNeedSmth = () => {
-    setNeedSmthOpen(!needSmthOpen);
-    if (menuOpen) setMenuOpen(false);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    if (showArrow && e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      e.preventDefault();
+      if (showArrow === 'haeun_action') {
+        showHaeunBubbles();
+      } else {
+        window.open(showArrow, '_blank');
+      }
+      return;
+    }
+
+    // Handle Tab for autocomplete
+    if (e.key === 'Tab' && suggestion && !e.nativeEvent.isComposing) {
+      e.preventDefault();
+      const newContent = content + suggestion;
+      setContent(newContent);
+      setCursorPosition(newContent.length);
+      setSelectionStart(newContent.length);
+      setSelectionEnd(newContent.length);
+      setSuggestion('');
+      
+      // Check if completed keyword has a link
+      const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
+      const isExactMatch = (keyword: string, input: string) => {
+        if (hasKorean(keyword) || hasKorean(input)) {
+          return keyword === input;
+        } else {
+          return keyword.toLowerCase() === input.toLowerCase();
+        }
+      };
+      
+      const exactMatch = Object.keys(keywordLinks).find(keyword => 
+        isExactMatch(keyword, newContent.trim())
+      );
+      if (exactMatch) {
+        setShowArrow(keywordLinks[exactMatch]);
+      }
+      
+      // Let React handle the state update, avoid direct DOM manipulation
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.setSelectionRange(newContent.length, newContent.length);
+        }
+      }, 0);
+      return;
+    }
+
+    // Handle Ctrl+A (Select All)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+      e.preventDefault();
+      setSelectionStart(0);
+      setSelectionEnd(content.length);
+      setCursorPosition(content.length);
+      textarea.setSelectionRange(0, content.length);
+      return;
+    }
+
+    // Handle Delete and Backspace for selected text
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selectionStart !== selectionEnd) {
+      e.preventDefault();
+      const start = Math.min(selectionStart, selectionEnd);
+      const end = Math.max(selectionStart, selectionEnd);
+      const newContent = content.substring(0, start) + content.substring(end);
+      setContent(newContent);
+      setCursorPosition(start);
+      setSelectionStart(start);
+      setSelectionEnd(start);
+      textarea.value = newContent;
+      textarea.setSelectionRange(start, start);
+      setIsTyping(true);
+      
+      // Clear existing timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      
+      // Set new timeout to stop typing state after 0.2 second
+      typingTimeoutRef.current = setTimeout(() => {
+        setIsTyping(false);
+      }, 200);
+      return;
+    }
+
+    // Handle arrow keys
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      
+      setIsTyping(true);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      typingTimeoutRef.current = setTimeout(() => {
+        setIsTyping(false);
+      }, 200);
+
+      let newPosition = cursorPosition;
+      
+      if (e.key === 'ArrowLeft' && newPosition > 0) {
+        newPosition--;
+      } else if (e.key === 'ArrowRight' && newPosition < content.length) {
+        newPosition++;
+      } else if (e.key === 'ArrowUp') {
+        // Move to beginning of line or previous line
+        const lines = content.substring(0, newPosition).split('\n');
+        if (lines.length > 1) {
+          const currentLineStart = newPosition - lines[lines.length - 1].length;
+          const prevLineStart = currentLineStart - lines[lines.length - 2].length - 1;
+          const currentColumn = lines[lines.length - 1].length;
+          const prevLineLength = lines[lines.length - 2].length;
+          newPosition = Math.max(0, prevLineStart + Math.min(currentColumn, prevLineLength));
+        } else {
+          newPosition = 0;
+        }
+      } else if (e.key === 'ArrowDown') {
+        // Move to end of line or next line
+        const beforeCursor = content.substring(0, newPosition);
+        const afterCursor = content.substring(newPosition);
+        const currentLineEnd = afterCursor.indexOf('\n');
+        
+        if (currentLineEnd !== -1) {
+          const lines = beforeCursor.split('\n');
+          const currentColumn = lines[lines.length - 1].length;
+          const nextLineStart = newPosition + currentLineEnd + 1;
+          const restOfContent = content.substring(nextLineStart);
+          const nextLineEnd = restOfContent.indexOf('\n');
+          const nextLineLength = nextLineEnd === -1 ? restOfContent.length : nextLineEnd;
+          newPosition = nextLineStart + Math.min(currentColumn, nextLineLength);
+        } else {
+          newPosition = content.length;
+        }
+      }
+
+      if (e.shiftKey) {
+        // Text selection with shift + arrow keys
+        if (selectionStart === selectionEnd) {
+          // Start new selection
+          setSelectionStart(cursorPosition);
+        }
+        setSelectionEnd(newPosition);
+        textarea.setSelectionRange(Math.min(selectionStart, newPosition), Math.max(selectionStart, newPosition));
+      } else {
+        // Clear selection and move cursor
+        setSelectionStart(newPosition);
+        setSelectionEnd(newPosition);
+        textarea.setSelectionRange(newPosition, newPosition);
+      }
+      
+      setCursorPosition(newPosition);
+    }
+  };
+
+  const handleArrowClick = () => {
+    if (showArrow) {
+      window.open(showArrow, '_blank');
+    }
+  };
+
+  const renderTextWithSelection = () => {
+    if (content.length === 0) {
+      return <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>;
+    }
+
+    const hasSelection = selectionStart !== selectionEnd;
+    const start = Math.min(selectionStart, selectionEnd);
+    const end = Math.max(selectionStart, selectionEnd);
+
+    if (!hasSelection) {
+      // No selection, just render text with cursor
+      const beforeCursor = content.substring(0, cursorPosition);
+      const afterCursor = content.substring(cursorPosition);
+      
+      return (
+        <div className="flex items-center justify-center">
+          <span>{beforeCursor}</span>
+          {!showArrow && !suggestion && <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>}
+          <span>{afterCursor}</span>
+          {suggestion && (
+            <span style={{ color: '#ccc' }}>{suggestion}</span>
+          )}
+          {showArrow && (
+             <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+             </button>
+          )}
+        </div>
+      );
+    } else {
+      // Has selection, render with highlight
+      const beforeSelection = content.substring(0, start);
+      const selectedText = content.substring(start, end);
+      const afterSelection = content.substring(end);
+      
+      return (
+        <div className="flex items-center justify-center">
+          <span>{beforeSelection}</span>
+          <span 
+            style={{ 
+              backgroundColor: 'rgba(255, 0, 0, 0.2)',
+            }}
+          >
+            {selectedText}
+          </span>
+          <span>{afterSelection}</span>
+          {showArrow && (
+            <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </button>
+          )}
+          {!hasSelection && cursorPosition === content.length && !showArrow && (
+            <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>
+          )}
+        </div>
+      );
+    }
+  };
+
+  const handleClick = () => {
+    textareaRef.current?.focus();
   };
 
   return (
-    <div className="min-h-screen bg-white text-black">
-      {/* Navbar */}
-      <Navbar toggleNeedSmth={toggleNeedSmth} needSmthOpen={needSmthOpen} />
-      
-      {/* Need Smth Overlay */}
-      <NeedSmthMenu isOpen={needSmthOpen} />
-      
-      {/* Main Content */}
-      <main className="md:pt-16 pt-14 pb-20 w-full">
-        {/* Marquee Banner */}
-        {/* <Marquee videoId={videoId} videoTitle={videoTitle} /> */}
-        
-        {/* Gallery Section - Full Width */}
-        <div className="w-full">
-          <div className="flex flex-col">
-            {/* Animation Course Card */}
-            <div className="flex flex-col md:flex-row gap-0 md:gap-8 border-t pb-8 md:pb-0 border-gray-600">
-              <Link 
-                href="https://bit.ly/4dDyZvR"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group md:w-1/2"
-              >
-                <div className="aspect-video relative overflow-hidden mb-4 md:mb-0 bg-gray-100">
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
-                  >
-                    <source src="https://media.githubusercontent.com/media/eunhasoo1/h_ablankcanvas/main/public/video/coloso.mp4" type="video/mp4" />
-                  </video>
-                </div>
-              </Link>
-              <Link 
-                href="https://bit.ly/4dDyZvR"
-                target="_blank"
-                rel="noopener noreferrer"
-                className=" group md:w-1/2 flex flex-col justify-center px-5 md:px-0 gap-2"
-              >
-                <h3 className="uppercase text-xl md:text-3xl font-normal">COLOSO COURSE</h3>
-                <p className="text-sm md:text-base font-light text-gray-600 mb-4">
-                  Available in Korean. Global coming soon.
-                </p>
-                <span className="uppercase text-xs font-light inline-block group-hover:text-gray-500 transition-colors">
-                  <span className="border-b border-black pb-1">Learn More</span>
-                </span>
-              </Link>
+    <main 
+      className="min-h-screen bg-white text-black flex items-center justify-center relative cursor-text"
+      onClick={handleClick}
+    >
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
+        <Image src="/image/pin.png" alt="Pin" width={40} height={40} />
             </div>
             
-            {/* Chatflix Card */}
-            <div className="flex flex-col md:flex-row gap-0 md:gap-8 border-b border-t pb-8 md:pb-0 border-gray-600">
-              <Link 
-                href="https://chatflix.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group md:w-1/2"
-              >
-                <div className="aspect-video relative overflow-hidden mb-4 bg-gray-100">
-                  <Image 
-                    src="/image/chatflix.png"
-                    alt="Chatflix"
-                    fill
-                    className="object-cover transform hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              </Link>
-              <Link 
-                href="https://chatflix.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className=" group md:w-1/2 flex flex-col justify-center px-5 md:px-0 gap-4"
-              >
-                <h3 className="uppercase text-xl md:text-3xl font-normal">MY GO-TO AI</h3>
-                <p className="text-sm md:text-base font-light text-gray-600 mb-4">
-                  The Ultimate LLM Collection
-                </p>
-                <span className="uppercase text-xs font-light inline-block group-hover:text-gray-500 transition-colors">
-                  <span className="border-b border-black pb-1">Explore Now</span>
-                </span>
-              </Link>
+      <div className="w-full max-w-4xl p-8 text-center -mt-80">
+        <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
+          {renderTextWithSelection()}
+        </div>
+        <textarea
+          ref={textareaRef}
+          value={content}
+          onChange={handleContentChange}
+          onKeyDown={handleKeyDown}
+          className="absolute opacity-0 pointer-events-none"
+          autoFocus
+        />
             </div>
-          </div>
+      
+      <div className="absolute bottom-4 right-8 font-marydale text-sm">
+        {formatDate(dateTime)}
         </div>
 
-        {/* Background Video Section - Full Width */}
-        <div className="w-full px-5 mt-20">
-          <h2 className="uppercase text-sm font-normal mb-4">LATEST video</h2>
-          <Link 
-            href={`https://www.youtube.com/watch?v=${videoId}`}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <div className="aspect-video relative overflow-hidden bg-gray-100 -mx-5">
-              {!loading && (
-                <iframe
-                  className="absolute w-full h-full"
-                  src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&loop=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${videoId}&vq=hd1080`}
-                  title="Latest video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  style={{
-                    objectFit: 'cover',
-                    pointerEvents: 'none',
-                  }}
-                />
-              )}
-            </div>
-          </Link>
+      {bubbles.map(bubble => (
+        <div
+          key={bubble.id}
+          className="bubble"
+          style={{
+            left: `${bubble.x}px`,
+            top: `${bubble.y}px`,
+            '--bubble-size': bubble.size,
+            animationDelay: `${bubble.delay}ms`,
+          } as React.CSSProperties}
+        >
+          {bubble.text}
         </div>
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+      ))}
+    </main>
   );
 }
 

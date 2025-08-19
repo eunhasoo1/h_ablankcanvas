@@ -92,5 +92,73 @@ body {
   animation: marquee 60s linear infinite;
 }
 
+.custom-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: red;
+  border-radius: 1px;
+  animation: caret-blink 1.2s ease-out infinite;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+}
+
+.custom-cursor.no-blink {
+  animation: none;
+  opacity: 1;
+}
+
+.bubble {
+  position: absolute;
+  background-color: red;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-family: sans-serif;
+  font-size: 14px;
+  pointer-events: none;
+  animation: bubble-animation 2s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes bubble-animation {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(var(--bubble-size, 1));
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(calc(var(--bubble-size, 1) * 1.5));
+    opacity: 0;
+  }
+}
+
+@keyframes caret-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Text selection highlight - Apple Notes style */
+::selection {
+  background-color: rgba(255, 0, 0, 0.2); /* Light red with transparency */
+  color: inherit;
+}
+
+::-moz-selection {
+  background-color: rgba(255, 0, 0, 0.2); /* Light red with transparency for Firefox */
+  color: inherit;
+}
+
+@layer base {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+  }
+}
+
 
 
