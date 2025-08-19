@@ -199,7 +199,7 @@ export default function Home() {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+    if ((e.key === 'Enter' || e.keyCode === 13) && !e.nativeEvent.isComposing) {
       if (isMobile && suggestion) {
         e.preventDefault();
         completeSuggestion();
