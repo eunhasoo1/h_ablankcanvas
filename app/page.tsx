@@ -382,11 +382,11 @@ export default function Home() {
                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
              </button>
           )}
-          {showArrow && isMobile && (
-             <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block">
-               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-             </a>
-          )}
+                     {showArrow && isMobile && (
+              <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </button>
+           )}
         </div>
       );
     } else {
@@ -411,11 +411,11 @@ export default function Home() {
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </button>
           )}
-          {showArrow && isMobile && (
-            <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </a>
-          )}
+                     {showArrow && isMobile && (
+              <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </button>
+           )}
           {!hasSelection && cursorPosition === content.length && !showArrow && (
             <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>
           )}
@@ -424,19 +424,19 @@ export default function Home() {
     }
   };
 
-  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-    // Check if the click target or its parent is an anchor tag or a link image.
-    let target = e.target as HTMLElement;
-    while (target && target.tagName !== 'BODY') {
-      if (target.tagName === 'A' || target.closest('[data-link-image]')) {
-        // If it's a link, let the default browser action happen and don't focus the textarea.
-        return;
-      }
-      target = target.parentElement!;
-    }
+     const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+     // Check if the click target or its parent is an anchor tag, button, or a link image.
+     let target = e.target as HTMLElement;
+     while (target && target.tagName !== 'BODY') {
+       if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('[data-link-image]')) {
+         // If it's a link, let the default browser action happen and don't focus the textarea.
+         return;
+       }
+       target = target.parentElement!;
+     }
 
-    textareaRef.current?.focus();
-  };
+     textareaRef.current?.focus();
+   };
 
   return (
     <main
