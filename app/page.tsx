@@ -3,19 +3,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
-const keywordLinks: { [key: string]: string } = {
-  'haeun': 'haeun_action',
-  'coloso': 'https://bit.ly/4dDyZvR',
-  '콜로소': 'https://bit.ly/4dDyZvR',
-  'course': 'https://bit.ly/4dDyZvR',
-  'timelapse': 'https://www.youtube.com/@hablankcanvas_data',
-  'process': 'https://www.youtube.com/@hablankcanvas_data',
-  'youtube timelapse': 'https://www.youtube.com/@hablankcanvas_data',
-  '타임랩스': 'https://www.youtube.com/@hablankcanvas_data',
-  '과정 영상': 'https://www.youtube.com/@hablankcanvas_data',
-  'chatflix': 'https://www.chatflix.app',
-  'ai': 'https://www.chatflix.app',
-  'llm': 'https://www.chatflix.app',
+const keywordConfig: { [key: string]: { href: string; image?: string } } = {
+  'coloso': { href: 'https://bit.ly/4dDyZvR', image: '/image/coloso.png' },
+  '콜로소': { href: 'https://bit.ly/4dDyZvR', image: '/image/coloso.png' },
+  'course': { href: 'https://bit.ly/4dDyZvR', image: '/image/coloso.png' },
+  'chatflix': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
+  'ai': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
+  'llm': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
+  'timelapse': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
+  'process': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
+  'youtube timelapse': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
+  '타임랩스': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
+  '과정 영상': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
+  'haeun': { href: 'haeun_action' },
 };
 
 export default function Home() {
@@ -28,6 +28,7 @@ export default function Home() {
   const [showArrow, setShowArrow] = useState<string | null>(null);
   const [suggestion, setSuggestion] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
+  const [linkImageSrc, setLinkImageSrc] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const arrowButtonRef = useRef<HTMLButtonElement>(null);
@@ -122,11 +123,12 @@ export default function Home() {
       }
     };
 
-    const exactMatch = Object.keys(keywordLinks).find(keyword =>
+    const exactMatch = Object.keys(keywordConfig).find(keyword =>
       isExactMatch(keyword, newContent.trim())
     );
     if (exactMatch) {
-      setShowArrow(keywordLinks[exactMatch]);
+      setShowArrow(keywordConfig[exactMatch].href);
+      setLinkImageSrc(keywordConfig[exactMatch].image || null);
     }
 
     setTimeout(() => {
@@ -159,19 +161,21 @@ export default function Home() {
     };
 
     // Check for exact match
-    const exactMatch = Object.keys(keywordLinks).find(keyword =>
+    const exactMatch = Object.keys(keywordConfig).find(keyword =>
       isMatch(keyword, trimmedContent, true)
     );
 
     if (exactMatch) {
-      setShowArrow(keywordLinks[exactMatch]);
+      setShowArrow(keywordConfig[exactMatch].href);
+      setLinkImageSrc(keywordConfig[exactMatch].image || null);
       setSuggestion('');
     } else {
       setShowArrow(null);
+      setLinkImageSrc(null);
 
       // Find matching keywords for autocomplete
       if (trimmedContent.length > 0) {
-        const matchingKeyword = Object.keys(keywordLinks).find(keyword =>
+        const matchingKeyword = Object.keys(keywordConfig).find(keyword =>
           isMatch(keyword, trimmedContent, false) && !isMatch(keyword, trimmedContent, true)
         );
 
@@ -209,7 +213,9 @@ export default function Home() {
 
       if (showArrow) {
         e.preventDefault();
-        arrowButtonRef.current?.click();
+        if (!isMobile) {
+          arrowButtonRef.current?.click();
+        }
         return;
       }
     }
@@ -371,10 +377,15 @@ export default function Home() {
           {suggestion && (
             <span style={{ color: '#ccc' }}>{suggestion}</span>
           )}
-          {showArrow && (
+          {showArrow && !isMobile && (
              <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
              </button>
+          )}
+          {showArrow && isMobile && (
+             <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block">
+               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+             </a>
           )}
         </div>
       );
@@ -395,10 +406,15 @@ export default function Home() {
             {selectedText}
           </span>
           <span>{afterSelection}</span>
-          {showArrow && (
+          {showArrow && !isMobile && (
             <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </button>
+          )}
+          {showArrow && isMobile && (
+            <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </a>
           )}
           {!hasSelection && cursorPosition === content.length && !showArrow && (
             <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>
@@ -423,8 +439,15 @@ export default function Home() {
             </div>
 
       <div className="w-full max-w-4xl p-8 text-center -mt-80">
-        <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
-          {renderTextWithSelection()}
+        <div className="relative inline-block">
+          <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
+            {renderTextWithSelection()}
+          </div>
+          {linkImageSrc && (
+            <a href={showArrow!} target="_blank" rel="noopener noreferrer" className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4">
+              <Image src={linkImageSrc} alt="Link image" width={150} height={150} className="rounded-lg" />
+            </a>
+          )}
         </div>
         <textarea
           ref={textareaRef}
