@@ -213,9 +213,7 @@ export default function Home() {
 
       if (showArrow) {
         e.preventDefault();
-        if (!isMobile) {
-          arrowButtonRef.current?.click();
-        }
+        arrowButtonRef.current?.click();
         return;
       }
     }
@@ -335,22 +333,6 @@ export default function Home() {
     if (showArrow) {
       if (showArrow === 'haeun_action') {
         showHaeunBubbles();
-      } else {
-        const isBitlyLink = showArrow.includes('bit.ly');
-        
-        if (isMobile && isBitlyLink) {
-          // On mobile, open bit.ly links in the current tab
-          window.location.href = showArrow;
-        } else {
-          // On desktop, or for non-bit.ly links on mobile, open in a new tab
-          const link = document.createElement('a');
-          link.href = showArrow;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
       }
     }
   };
@@ -377,16 +359,17 @@ export default function Home() {
           {suggestion && (
             <span style={{ color: '#ccc' }}>{suggestion}</span>
           )}
-          {showArrow && !isMobile && (
-             <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
-               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-             </button>
-          )}
-                     {showArrow && isMobile && (
-              <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+          {showArrow && (
+            showArrow === 'haeun_action' ? (
+              <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
-           )}
+            ) : (
+              <a href={showArrow} target="_blank" rel="noopener noreferrer" ref={arrowButtonRef as React.RefObject<HTMLAnchorElement>} className="ml-2 bg-red-500 rounded-full p-1 inline-flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
+            )
+          )}
         </div>
       );
     } else {
@@ -406,16 +389,17 @@ export default function Home() {
             {selectedText}
           </span>
           <span>{afterSelection}</span>
-          {showArrow && !isMobile && (
-            <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </button>
-          )}
-                     {showArrow && isMobile && (
-              <button onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+          {showArrow && (
+            showArrow === 'haeun_action' ? (
+              <button ref={arrowButtonRef} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
-           )}
+            ) : (
+              <a href={showArrow} target="_blank" rel="noopener noreferrer" ref={arrowButtonRef as React.RefObject<HTMLAnchorElement>} className="ml-2 bg-red-500 rounded-full p-1 inline-flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
+            )
+          )}
           {!hasSelection && cursorPosition === content.length && !showArrow && (
             <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>
           )}
@@ -453,14 +437,16 @@ export default function Home() {
           <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
             {renderTextWithSelection()}
           </div>
-          {linkImageSrc && (
-            <div 
-              onClick={handleArrowClick}
+          {linkImageSrc && showArrow && showArrow !== 'haeun_action' && (
+            <a 
+              href={showArrow}
+              target="_blank"
+              rel="noopener noreferrer"
               data-link-image="true"
               className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 cursor-pointer"
             >
               <Image src={linkImageSrc} alt="Link image" width={150} height={150} className="rounded-lg" />
-            </div>
+            </a>
           )}
         </div>
         <textarea
