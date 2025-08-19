@@ -383,7 +383,7 @@ export default function Home() {
              </button>
           )}
           {showArrow && isMobile && (
-             <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block">
+             <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block" onClick={(e) => e.stopPropagation()}>
                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
              </a>
           )}
@@ -412,7 +412,7 @@ export default function Home() {
             </button>
           )}
           {showArrow && isMobile && (
-            <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block">
+            <a href={showArrow} target="_blank" rel="noopener noreferrer" className="ml-2 bg-red-500 rounded-full p-1 inline-block" onClick={(e) => e.stopPropagation()}>
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </a>
           )}
@@ -444,7 +444,7 @@ export default function Home() {
             {renderTextWithSelection()}
           </div>
           {linkImageSrc && (
-            <a href={showArrow!} target="_blank" rel="noopener noreferrer" className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4">
+            <a href={showArrow!} target="_blank" rel="noopener noreferrer" className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4" onClick={(e) => e.stopPropagation()}>
               <Image src={linkImageSrc} alt="Link image" width={150} height={150} className="rounded-lg" />
             </a>
           )}
