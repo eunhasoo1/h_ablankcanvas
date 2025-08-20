@@ -10,12 +10,8 @@ const keywordConfig: { [key: string]: { href: string; image?: string } } = {
   'chatflix': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
   'ai': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
   'llm': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
-  'timelapse': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
-  'process': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
-  'youtube timelapse': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
-  '타임랩스': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
-  '과정 영상': { href: 'https://www.youtube.com/@hablankcanvas_data', image: '/image/youtubeicon.png' },
   'haeun': { href: 'haeun_action' },
+  'hint': { href: 'hint_action' },
 };
 
 export default function Home() {
@@ -33,6 +29,7 @@ export default function Home() {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const arrowButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
   const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setDateTime(new Date()), 1000);
@@ -103,6 +100,43 @@ export default function Home() {
     }, 3000);
   }
 
+  const updateKeywordState = (textContent: string) => {
+    const trimmedContent = textContent.trim();
+    const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
+    const isMatch = (keyword: string, input: string, exact: boolean = true) => {
+      if (hasKorean(keyword) || hasKorean(input)) {
+        return exact ? keyword === input : keyword.startsWith(input);
+      } else {
+        return exact ? keyword.toLowerCase() === input.toLowerCase() : keyword.toLowerCase().startsWith(input.toLowerCase());
+      }
+    };
+
+    const exactMatch = Object.keys(keywordConfig).find(keyword =>
+      isMatch(keyword, trimmedContent, true)
+    );
+
+    if (exactMatch) {
+      setShowArrow(keywordConfig[exactMatch].href);
+      setLinkImageSrc(keywordConfig[exactMatch].image || null);
+      setSuggestion('');
+    } else {
+      setShowArrow(null);
+      setLinkImageSrc(null);
+      if (trimmedContent.length > 0) {
+        const matchingKeyword = Object.keys(keywordConfig).find(keyword =>
+          isMatch(keyword, trimmedContent, false) && !isMatch(keyword, trimmedContent, true)
+        );
+        if (matchingKeyword) {
+          setSuggestion(matchingKeyword.substring(trimmedContent.length));
+        } else {
+          setSuggestion('');
+        }
+      } else {
+        setSuggestion('');
+      }
+    }
+  };
+
   const completeSuggestion = () => {
     if (!suggestion) return;
 
@@ -146,48 +180,7 @@ export default function Home() {
     setSelectionEnd(e.target.selectionEnd || 0);
     setIsTyping(true);
 
-    const trimmedContent = newContent.trim();
-
-    // Helper function to check if string contains Korean characters
-    const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
-
-    // Helper function for comparison (case insensitive for English, exact for Korean)
-    const isMatch = (keyword: string, input: string, exact: boolean = true) => {
-      if (hasKorean(keyword) || hasKorean(input)) {
-        return exact ? keyword === input : keyword.startsWith(input);
-      } else {
-        return exact ? keyword.toLowerCase() === input.toLowerCase() : keyword.toLowerCase().startsWith(input.toLowerCase());
-      }
-    };
-
-    // Check for exact match
-    const exactMatch = Object.keys(keywordConfig).find(keyword =>
-      isMatch(keyword, trimmedContent, true)
-    );
-
-    if (exactMatch) {
-      setShowArrow(keywordConfig[exactMatch].href);
-      setLinkImageSrc(keywordConfig[exactMatch].image || null);
-      setSuggestion('');
-    } else {
-      setShowArrow(null);
-      setLinkImageSrc(null);
-
-      // Find matching keywords for autocomplete
-      if (trimmedContent.length > 0) {
-        const matchingKeyword = Object.keys(keywordConfig).find(keyword =>
-          isMatch(keyword, trimmedContent, false) && !isMatch(keyword, trimmedContent, true)
-        );
-
-        if (matchingKeyword) {
-          setSuggestion(matchingKeyword.substring(trimmedContent.length));
-        } else {
-          setSuggestion('');
-        }
-      } else {
-        setSuggestion('');
-      }
-    }
+    updateKeywordState(newContent);
 
     // Clear existing timeout
     if (typingTimeoutRef.current) {
@@ -248,6 +241,8 @@ export default function Home() {
       textarea.value = newContent;
       textarea.setSelectionRange(start, start);
       setIsTyping(true);
+
+      updateKeywordState(newContent);
 
       // Clear existing timeout
       if (typingTimeoutRef.current) {
@@ -359,7 +354,7 @@ export default function Home() {
           {suggestion && (
             <span style={{ color: '#ccc' }}>{suggestion}</span>
           )}
-          {showArrow && (
+          {showArrow && showArrow !== 'hint_action' && (
             showArrow === 'haeun_action' ? (
               <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -389,7 +384,7 @@ export default function Home() {
             {selectedText}
           </span>
           <span>{afterSelection}</span>
-          {showArrow && (
+          {showArrow && showArrow !== 'hint_action' && (
             showArrow === 'haeun_action' ? (
               <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -435,18 +430,46 @@ export default function Home() {
       <div className="w-full max-w-4xl p-8 text-center -mt-80">
         <div className="relative inline-block">
           <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
-            {renderTextWithSelection()}
+            {isMobile ? (
+              <div className="flex flex-col items-center gap-4 text-lg mt-12">
+                <a
+                  href="https://bit.ly/4dDyZvR"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  coloso
+                </a>
+                <a
+                  href="https://www.chatflix.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  chatflix
+                </a>
+              </div>
+            ) : (
+              renderTextWithSelection()
+            )}
           </div>
-          {linkImageSrc && showArrow && showArrow !== 'haeun_action' && (
-            <a 
-              href={showArrow}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-link-image="true"
-              className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 cursor-pointer"
-            >
-              <Image src={linkImageSrc} alt="Link image" width={150} height={150} className="rounded-lg" />
-            </a>
+          {!isMobile && showArrow && showArrow !== 'haeun_action' && (
+            showArrow === 'hint_action' ? (
+              <div className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 flex flex-col gap-2 text-gray-300 text-lg">
+                <span>c0lo$o</span>
+                <span>ch@tfl!x</span>
+              </div>
+            ) : (
+              linkImageSrc && (
+                <a 
+                  href={showArrow}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-link-image="true"
+                  className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-2 cursor-pointer w-32 h-20 "
+                >
+                  <Image src={linkImageSrc} alt="Link image" width={300} height={300} className="rounded-xl w-full h-full object-cover " />
+                </a>
+              )
+            )
           )}
         </div>
         <textarea
@@ -459,9 +482,22 @@ export default function Home() {
         />
             </div>
 
-      <div className="absolute bottom-4 right-8 font-marydale text-sm">
+      <div
+        className="absolute bottom-4 right-5 font-marydale text-xs sm:text-sm cursor-help"
+        onMouseEnter={() => setShowHint(true)}
+        onMouseLeave={() => setShowHint(false)}
+      >
         {formatDate(dateTime)}
         </div>
+
+      {showHint && !isMobile && (
+        <div className="absolute bottom-12 right-5 z-20 fade-in w-max">
+          <div className="relative bg-red-500 text-white text-xs rounded-full py-2 px-3 ">
+            <p>need hint? type <span className="font-bold">hint</span>.</p>
+            <div className="absolute right-3 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-red-500"></div>
+          </div>
+        </div>
+      )}
 
       {bubbles.map(bubble => (
         <div
