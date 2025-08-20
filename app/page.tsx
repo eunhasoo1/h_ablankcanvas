@@ -529,6 +529,7 @@ export default function Home() {
               <div className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 flex flex-col gap-2 text-gray-300 text-lg">
                 <span>c0lo$o</span>
                 <span>ch@tfl!x</span>
+                <span>!nst@gr@m</span>
               </div>
             ) : (
               linkImageSrc && (
