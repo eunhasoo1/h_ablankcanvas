@@ -13,6 +13,7 @@ const keywordConfig: { [key: string]: { href: string; image?: string } } = {
   'instagram': { href: 'https://www.instagram.com/h_ablankcanvas/', image: '/image/profilepic.png' },
   '인스타': { href: 'https://www.instagram.com/h_ablankcanvas/', image: '/image/profilepic.png' },
   'haeun': { href: 'haeun_action' },
+  '하은': { href: 'haeun_korean_action' },
   'hint': { href: 'hint_action' },
 };
 
@@ -111,6 +112,49 @@ export default function Home() {
     }, 3000);
   }
 
+  const showHaeunKoreanBubbles = () => {
+    const margin = isMobile ? 50 : 150; // Margin from the window edges
+    const minDistance = 100; // Minimum distance between bubbles
+    const newBubbles: { id: number; x: number; y: number; text: string; delay: number; size: number }[] = [];
+
+    const isOverlapping = (x: number, y: number, size: number) => {
+      for (const bubble of newBubbles) {
+        const distance = Math.sqrt(Math.pow(x - bubble.x, 2) + Math.pow(y - bubble.y, 2));
+        if (distance < minDistance) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    for (let i = 0; i < 10; i++) {
+      let x, y, size;
+      let attempts = 0;
+      do {
+        x = Math.random() * (window.innerWidth - margin * 2) + margin;
+        y = Math.random() * (window.innerHeight - margin * 2) + margin;
+        size = Math.random() * 0.5 + 0.8;
+        if (++attempts > 100) break; // Safety break to prevent infinite loops
+      } while (isOverlapping(x, y, size));
+
+      const text = "안녕하세요!";
+      newBubbles.push({
+        id: Date.now() + i,
+        x,
+        y,
+        text,
+        delay: i * 100,
+        size,
+      });
+    }
+
+    setBubbles(newBubbles);
+
+    setTimeout(() => {
+      setBubbles([]);
+    }, 3000);
+  }
+
   const updateKeywordState = (textContent: string) => {
     const trimmedContent = textContent.trim();
     const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
@@ -186,9 +230,12 @@ export default function Home() {
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setContent(newContent);
-    setCursorPosition(e.target.selectionStart || 0);
-    setSelectionStart(e.target.selectionStart || 0);
-    setSelectionEnd(e.target.selectionEnd || 0);
+    // Only update cursor/selection states if not composing via IME
+    if (!isComposingIME) {
+      setCursorPosition(e.target.selectionStart || 0);
+      setSelectionStart(e.target.selectionStart || 0);
+      setSelectionEnd(e.target.selectionEnd || 0);
+    }
     setIsTyping(true);
 
     updateKeywordState(newContent);
@@ -207,6 +254,11 @@ export default function Home() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
+
+    // If composing via IME, let the browser handle it
+    if (isComposingIME && !e.nativeEvent.isComposing) {
+      return; // Added !e.nativeEvent.isComposing to allow Enter/Tab at the end of composition
+    }
 
     if ((e.key === 'Enter' || e.keyCode === 13) && !e.nativeEvent.isComposing) {
       if (isMobile && suggestion) {
@@ -269,69 +321,72 @@ export default function Home() {
 
     // Handle arrow keys
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
+      // Only update cursor/selection states if not composing via IME
+      if (!isComposingIME) {
+        e.preventDefault();
 
-      setIsTyping(true);
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsTyping(false);
-      }, 200);
+        setIsTyping(true);
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => {
+          setIsTyping(false);
+        }, 200);
 
-      let newPosition = cursorPosition;
+        let newPosition = cursorPosition;
 
-      if (e.key === 'ArrowLeft' && newPosition > 0) {
-        newPosition--;
-      } else if (e.key === 'ArrowRight' && newPosition < content.length) {
-        newPosition++;
-      } else if (e.key === 'ArrowUp') {
-        // Move to beginning of line or previous line
-        const lines = content.substring(0, newPosition).split('\n');
-        if (lines.length > 1) {
-          const currentLineStart = newPosition - lines[lines.length - 1].length;
-          const prevLineStart = currentLineStart - lines[lines.length - 2].length - 1;
-          const currentColumn = lines[lines.length - 1].length;
-          const prevLineLength = lines[lines.length - 2].length;
-          newPosition = Math.max(0, prevLineStart + Math.min(currentColumn, prevLineLength));
+        if (e.key === 'ArrowLeft' && newPosition > 0) {
+          newPosition--;
+        } else if (e.key === 'ArrowRight' && newPosition < content.length) {
+          newPosition++;
+        } else if (e.key === 'ArrowUp') {
+          // Move to beginning of line or previous line
+          const lines = content.substring(0, newPosition).split('\n');
+          if (lines.length > 1) {
+            const currentLineStart = newPosition - lines[lines.length - 1].length;
+            const prevLineStart = currentLineStart - lines[lines.length - 2].length - 1;
+            const currentColumn = lines[lines.length - 1].length;
+            const prevLineLength = lines[lines.length - 2].length;
+            newPosition = Math.max(0, prevLineStart + Math.min(currentColumn, prevLineLength));
+          } else {
+            newPosition = 0;
+          }
+        } else if (e.key === 'ArrowDown') {
+          // Move to end of line or next line
+          const beforeCursor = content.substring(0, newPosition);
+          const afterCursor = content.substring(newPosition);
+          const currentLineEnd = afterCursor.indexOf('\n');
+
+          if (currentLineEnd !== -1) {
+            const lines = beforeCursor.split('\n');
+            const currentColumn = lines[lines.length - 1].length;
+            const nextLineStart = newPosition + currentLineEnd + 1;
+            const restOfContent = content.substring(nextLineStart);
+            const nextLineEnd = restOfContent.indexOf('\n');
+            const nextLineLength = nextLineEnd === -1 ? restOfContent.length : nextLineEnd;
+            newPosition = nextLineStart + Math.min(currentColumn, nextLineLength);
+          } else {
+            newPosition = content.length;
+          }
+        }
+
+        if (e.shiftKey) {
+          // Text selection with shift + arrow keys
+          if (selectionStart === selectionEnd) {
+            // Start new selection
+            setSelectionStart(cursorPosition);
+          }
+          setSelectionEnd(newPosition);
+          textarea.setSelectionRange(Math.min(selectionStart, newPosition), Math.max(selectionStart, newPosition));
         } else {
-          newPosition = 0;
+          // Clear selection and move cursor
+          setSelectionStart(newPosition);
+          setSelectionEnd(newPosition);
+          textarea.setSelectionRange(newPosition, newPosition);
         }
-      } else if (e.key === 'ArrowDown') {
-        // Move to end of line or next line
-        const beforeCursor = content.substring(0, newPosition);
-        const afterCursor = content.substring(newPosition);
-        const currentLineEnd = afterCursor.indexOf('\n');
 
-        if (currentLineEnd !== -1) {
-          const lines = beforeCursor.split('\n');
-          const currentColumn = lines[lines.length - 1].length;
-          const nextLineStart = newPosition + currentLineEnd + 1;
-          const restOfContent = content.substring(nextLineStart);
-          const nextLineEnd = restOfContent.indexOf('\n');
-          const nextLineLength = nextLineEnd === -1 ? restOfContent.length : nextLineEnd;
-          newPosition = nextLineStart + Math.min(currentColumn, nextLineLength);
-        } else {
-          newPosition = content.length;
-        }
+        setCursorPosition(newPosition);
       }
-
-      if (e.shiftKey) {
-        // Text selection with shift + arrow keys
-        if (selectionStart === selectionEnd) {
-          // Start new selection
-          setSelectionStart(cursorPosition);
-        }
-        setSelectionEnd(newPosition);
-        textarea.setSelectionRange(Math.min(selectionStart, newPosition), Math.max(selectionStart, newPosition));
-      } else {
-        // Clear selection and move cursor
-        setSelectionStart(newPosition);
-        setSelectionEnd(newPosition);
-        textarea.setSelectionRange(newPosition, newPosition);
-      }
-
-      setCursorPosition(newPosition);
     }
   };
 
@@ -339,6 +394,8 @@ export default function Home() {
     if (showArrow) {
       if (showArrow === 'haeun_action') {
         showHaeunBubbles();
+      } else if (showArrow === 'haeun_korean_action') {
+        showHaeunKoreanBubbles();
       }
     }
   };
@@ -351,14 +408,9 @@ export default function Home() {
     // If composing, we don't want to show the custom selection highlight.
     // The browser's IME will handle its own visual feedback for the composing text.
     if (isComposingIME) {
-      const beforeCursor = content.substring(0, cursorPosition);
-      const afterCursor = content.substring(cursorPosition);
-
       return (
         <div className="flex items-center justify-center">
-          <span>{beforeCursor}</span>
-          {!suggestion && <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>}
-          <span>{afterCursor}</span>
+          <span>{content}</span>
           {suggestion && (
             <span style={{ color: '#ccc' }}>{suggestion}</span>
           )}
@@ -395,7 +447,7 @@ export default function Home() {
             <span style={{ color: '#ccc' }}>{suggestion}</span>
           )}
           {showArrow && showArrow !== 'hint_action' && (
-            showArrow === 'haeun_action' ? (
+            (showArrow === 'haeun_action' || showArrow === 'haeun_korean_action') ? (
               <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
@@ -425,7 +477,7 @@ export default function Home() {
           </span>
           <span>{afterSelection}</span>
           {showArrow && showArrow !== 'hint_action' && (
-            showArrow === 'haeun_action' ? (
+            (showArrow === 'haeun_action' || showArrow === 'haeun_korean_action') ? (
               <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
@@ -503,10 +555,20 @@ export default function Home() {
             setIsComposingIME(false);
             // After composition ends, ensure selection/cursor and keyword state are updated for the final text
             if (textareaRef.current) {
-              setCursorPosition(textareaRef.current.selectionStart);
-              setSelectionStart(textareaRef.current.selectionStart);
-              setSelectionEnd(textareaRef.current.selectionEnd);
-              updateKeywordState(textareaRef.current.value);
+              const newContent = textareaRef.current.value; // Get the final composed value
+              setContent(newContent); // Ensure content state is fully updated
+              const newPosition = newContent.length; // Cursor should be at the end
+              setCursorPosition(newPosition);
+              setSelectionStart(newPosition);
+              setSelectionEnd(newPosition);
+              updateKeywordState(newContent);
+
+              // Give a small delay to ensure the DOM is updated before setting selection
+              setTimeout(() => {
+                if (textareaRef.current) {
+                  textareaRef.current.setSelectionRange(newPosition, newPosition);
+                }
+              }, 0);
             }
           }}
           className="absolute opacity-0 pointer-events-none"
