@@ -10,6 +10,8 @@ const keywordConfig: { [key: string]: { href: string; image?: string } } = {
   'chatflix': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
   'ai': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
   'llm': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
+  'instagram': { href: 'https://www.instagram.com/h_ablankcanvas/', image: '/image/profilepic.png' },
+  '인스타': { href: 'https://www.instagram.com/h_ablankcanvas/', image: '/image/profilepic.png' },
   'haeun': { href: 'haeun_action' },
   'hint': { href: 'hint_action' },
 };
@@ -453,9 +455,9 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-link-image="true"
-                  className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-2 cursor-pointer w-32 h-20 "
+                  className={`fade-in absolute top-full left-1/2 -translate-x-1/2 mt-2 cursor-pointer ${linkImageSrc === '/image/profilepic.png' ? 'w-20 h-20' : 'w-32 h-20'}`}
                 >
-                  <Image src={linkImageSrc} alt="Link image" width={300} height={300} className="rounded-xl w-full h-full object-cover " />
+                  <Image src={linkImageSrc} alt="Link image" width={300} height={300} className={`w-full h-full object-cover ${linkImageSrc === '/image/profilepic.png' ? 'rounded-full' : 'rounded-xl'}`} />
                 </a>
               )
             )
