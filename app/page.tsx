@@ -33,6 +33,7 @@ export default function Home() {
   const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
   const [showHint, setShowHint] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isComposingIME, setIsComposingIME] = useState(false); // New state
 
   useEffect(() => {
     setIsMounted(true);
@@ -347,6 +348,35 @@ export default function Home() {
       return <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>;
     }
 
+    // If composing, we don't want to show the custom selection highlight.
+    // The browser's IME will handle its own visual feedback for the composing text.
+    if (isComposingIME) {
+      const beforeCursor = content.substring(0, cursorPosition);
+      const afterCursor = content.substring(cursorPosition);
+
+      return (
+        <div className="flex items-center justify-center">
+          <span>{beforeCursor}</span>
+          {!suggestion && <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>}
+          <span>{afterCursor}</span>
+          {suggestion && (
+            <span style={{ color: '#ccc' }}>{suggestion}</span>
+          )}
+          {showArrow && showArrow !== 'hint_action' && (
+            showArrow === 'haeun_action' ? (
+              <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </button>
+            ) : (
+              <a href={showArrow} target="_blank" rel="noopener noreferrer" ref={arrowButtonRef as React.RefObject<HTMLAnchorElement>} className="ml-2 bg-red-500 rounded-full p-1 inline-flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
+            )
+          )}
+        </div>
+      );
+    }
+
     const hasSelection = selectionStart !== selectionEnd;
     const start = Math.min(selectionStart, selectionEnd);
     const end = Math.max(selectionStart, selectionEnd);
@@ -468,6 +498,17 @@ export default function Home() {
           value={content}
           onChange={handleContentChange}
           onKeyDown={handleKeyDown}
+          onCompositionStart={() => setIsComposingIME(true)}
+          onCompositionEnd={(e) => {
+            setIsComposingIME(false);
+            // After composition ends, ensure selection/cursor and keyword state are updated for the final text
+            if (textareaRef.current) {
+              setCursorPosition(textareaRef.current.selectionStart);
+              setSelectionStart(textareaRef.current.selectionStart);
+              setSelectionEnd(textareaRef.current.selectionEnd);
+              updateKeywordState(textareaRef.current.value);
+            }
+          }}
           className="absolute opacity-0 pointer-events-none"
           autoFocus
         />
