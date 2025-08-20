@@ -30,8 +30,10 @@ export default function Home() {
   const arrowButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
   const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
   const [showHint, setShowHint] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const timer = setInterval(() => setDateTime(new Date()), 1000);
     textareaRef.current?.focus();
 
@@ -46,6 +48,13 @@ export default function Home() {
       window.removeEventListener('resize', checkIsMobile);
     };
   }, []);
+
+  const handleClockClick = (e: React.MouseEvent) => {
+    if (isMobile) {
+      e.stopPropagation();
+      setShowHint(prev => !prev);
+    }
+  };
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -419,7 +428,7 @@ export default function Home() {
 
   return (
     <main
-      className="h-dvh bg-white text-black flex items-center justify-center relative cursor-text"
+      className="h-dvh bg-white text-black flex items-center justify-center relative cursor-text overflow-hidden"
       onClick={handleClick}
       onTouchStart={handleClick}
     >
@@ -430,28 +439,9 @@ export default function Home() {
       <div className="w-full max-w-4xl p-8 text-center -mt-80">
         <div className="relative inline-block">
           <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
-            {isMobile ? (
-              <div className="flex flex-col items-center gap-4 text-lg mt-12">
-                <a
-                  href="https://bit.ly/4dDyZvR"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  coloso
-                </a>
-                <a
-                  href="https://www.chatflix.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  chatflix
-                </a>
-              </div>
-            ) : (
-              renderTextWithSelection()
-            )}
+            {renderTextWithSelection()}
           </div>
-          {!isMobile && showArrow && showArrow !== 'haeun_action' && (
+          {showArrow && showArrow !== 'haeun_action' && (
             showArrow === 'hint_action' ? (
               <div className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 flex flex-col gap-2 text-gray-300 text-lg">
                 <span>c0lo$o</span>
@@ -484,13 +474,14 @@ export default function Home() {
 
       <div
         className="absolute bottom-4 right-5 font-marydale text-xs sm:text-sm cursor-help"
-        onMouseEnter={() => setShowHint(true)}
-        onMouseLeave={() => setShowHint(false)}
+        onMouseEnter={() => !isMobile && setShowHint(true)}
+        onMouseLeave={() => !isMobile && setShowHint(false)}
+        onClick={handleClockClick}
       >
-        {formatDate(dateTime)}
+        {isMounted ? formatDate(dateTime) : null}
         </div>
 
-      {showHint && !isMobile && (
+      {showHint && (
         <div className="absolute bottom-12 right-5 z-20 fade-in w-max">
           <div className="relative bg-red-500 text-white text-xs rounded-full py-2 px-3 ">
             <p>need hint? type <span className="font-bold">hint</span>.</p>
