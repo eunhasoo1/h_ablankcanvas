@@ -409,7 +409,7 @@ export default function Home() {
     // The browser's IME will handle its own visual feedback for the composing text.
     if (isComposingIME) {
       return (
-        <div className="flex items-center justify-center">
+        <div className="inline-block align-middle">
           <span>{content}</span>
           {suggestion && (
             <span style={{ color: '#ccc' }}>{suggestion}</span>
@@ -439,7 +439,7 @@ export default function Home() {
       const afterCursor = content.substring(cursorPosition);
 
       return (
-        <div className="flex items-center justify-center">
+        <div className="inline-block align-middle">
           <span>{beforeCursor}</span>
           {!suggestion && <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>}
           <span>{afterCursor}</span>
@@ -466,7 +466,7 @@ export default function Home() {
       const afterSelection = content.substring(end);
 
       return (
-        <div className="flex items-center justify-center">
+        <div className="inline-block align-middle">
           <span>{beforeSelection}</span>
           <span
             style={{
@@ -520,8 +520,8 @@ export default function Home() {
             </div>
 
       <div className="w-full max-w-4xl p-8 text-center -mt-80">
-        <div className="relative inline-block">
-          <div className="text-lg leading-relaxed" style={{ color: 'red' }}>
+        <div className="relative">
+          <div className="text-lg font-bold leading-relaxed" style={{ color: 'red' }}>
             {renderTextWithSelection()}
           </div>
           {showArrow && showArrow !== 'haeun_action' && (
