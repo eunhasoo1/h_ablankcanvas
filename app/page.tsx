@@ -11,7 +11,7 @@ import image5 from '../assets/images/5.png';
 
 export default function Home() {
   return (
-    <main className=" max-w-xs mx-auto text-[#1E0807] h-dvh flex flex-col justify-center font-marydale py-24 pb-28 sm:py-24 sm:pb-28 lg:py-28 lg:pb-32 ">
+    <main className=" max-w-xs mx-auto text-[#1E0807] h-dvh flex flex-col justify-center font-marydale py-20 pb-24 sm:py-24 sm:pb-28 lg:py-28 lg:pb-32 ">
       <div className="text-lg font-bold text-left mb-8 ml-2">
         <p>HA</p>
         <p className="-mt-2">EUN</p>
