@@ -11,7 +11,7 @@ import image5 from '../assets/images/5.png';
 
 export default function Home() {
   return (
-    <main className=" max-w-xs mx-auto text-black h-dvh flex flex-col justify-center font-marydale py-20 px-2 pl-0 overflow-hidden">
+    <main className=" max-w-xs mx-auto text-[#1E0807] h-dvh flex flex-col justify-center font-marydale py-20 pb-24 sm:py-24 sm:pb-28 px-2 pl-0 overflow-hidden">
       <div className="text-lg font-bold text-left mb-8">
         <p>HA</p>
         <p className="-mt-2">EUN</p>
@@ -19,7 +19,7 @@ export default function Home() {
 
       <div className="grid grid-cols-[3fr_4fr] grid-rows-3  mb-10 flex-grow">
         {/* Item 1 */}
-        <Link href="https://www.youtube.com/@h_ablankcanvas" target="_blank" rel="noopener noreferrer" className="relative ">
+        <Link href="https://www.youtube.com/@h_ablankcanvas" target="_blank" rel="noopener noreferrer" className="relative rotate-3 ">
           <Image src={image1} alt="The Details" fill className="object-contain scale-125" />
           <p className="absolute top-1 right-2 text-xs">01</p>
         </Link>
