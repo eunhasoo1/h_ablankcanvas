@@ -1,615 +1,105 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { motion, Variants } from 'framer-motion';
 
-const keywordConfig: { [key: string]: { href: string; image?: string } } = {
-  'coloso': { href: 'https://bit.ly/4dDyZvR', image: '/image/coloso.png' },
-  '콜로소': { href: 'https://bit.ly/4dDyZvR', image: '/image/coloso.png' },
-  'course': { href: 'https://bit.ly/4dDyZvR', image: '/image/coloso.png' },
-  'chatflix': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
-  'ai': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
-  'llm': { href: 'https://www.chatflix.app', image: '/image/chatflix.png' },
-  'instagram': { href: 'https://www.instagram.com/h_ablankcanvas/', image: '/image/profilepic.png' },
-  '인스타': { href: 'https://www.instagram.com/h_ablankcanvas/', image: '/image/profilepic.png' },
-  'haeun': { href: 'haeun_action' },
-  '하은': { href: 'haeun_korean_action' },
-  'hint': { href: 'hint_action' },
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
 };
 
+const itemVariants: Variants = {
+  hidden: { y: -20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  },
+};
+
+
 export default function Home() {
-  const [dateTime, setDateTime] = useState(new Date());
-  const [content, setContent] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState(0);
-  const [selectionStart, setSelectionStart] = useState(0);
-  const [selectionEnd, setSelectionEnd] = useState(0);
-  const [showArrow, setShowArrow] = useState<string | null>(null);
-  const [suggestion, setSuggestion] = useState<string>('');
-  const [isMobile, setIsMobile] = useState(false);
-  const [linkImageSrc, setLinkImageSrc] = useState<string | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const arrowButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
-  const [bubbles, setBubbles] = useState<{ id: number; x: number; y: number; text: string, delay: number, size: number }[]>([]);
-  const [showHint, setShowHint] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const [isComposingIME, setIsComposingIME] = useState(false); // New state
-
-  useEffect(() => {
-    setIsMounted(true);
-    const timer = setInterval(() => setDateTime(new Date()), 1000);
-    textareaRef.current?.focus();
-
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-
-    return () => {
-      clearInterval(timer);
-      window.removeEventListener('resize', checkIsMobile);
-    };
-  }, []);
-
-  const handleClockClick = (e: React.MouseEvent) => {
-    if (isMobile) {
-      e.stopPropagation();
-      setShowHint(prev => !prev);
-    }
-  };
-
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}. ${month}. ${day}. ${hours}:${minutes}`;
-  };
-
-  const showHaeunBubbles = () => {
-    const margin = isMobile ? 50 : 150; // Margin from the window edges
-    const minDistance = 100; // Minimum distance between bubbles
-    const newBubbles: { id: number; x: number; y: number; text: string; delay: number; size: number }[] = [];
-
-    const isOverlapping = (x: number, y: number, size: number) => {
-      for (const bubble of newBubbles) {
-        const distance = Math.sqrt(Math.pow(x - bubble.x, 2) + Math.pow(y - bubble.y, 2));
-        if (distance < minDistance) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    for (let i = 0; i < 10; i++) {
-      let x, y, size;
-      let attempts = 0;
-      do {
-        x = Math.random() * (window.innerWidth - margin * 2) + margin;
-        y = Math.random() * (window.innerHeight - margin * 2) + margin;
-        size = Math.random() * 0.5 + 0.8;
-        if (++attempts > 100) break; // Safety break to prevent infinite loops
-      } while (isOverlapping(x, y, size));
-
-      const text = Math.random() < 0.5 ? "that's me!" : "Hi!";
-      newBubbles.push({
-        id: Date.now() + i,
-        x,
-        y,
-        text,
-        delay: i * 100,
-        size,
-      });
-    }
-
-    setBubbles(newBubbles);
-
-    setTimeout(() => {
-      setBubbles([]);
-    }, 3000);
-  }
-
-  const showHaeunKoreanBubbles = () => {
-    const margin = isMobile ? 50 : 150; // Margin from the window edges
-    const minDistance = 100; // Minimum distance between bubbles
-    const newBubbles: { id: number; x: number; y: number; text: string; delay: number; size: number }[] = [];
-
-    const isOverlapping = (x: number, y: number, size: number) => {
-      for (const bubble of newBubbles) {
-        const distance = Math.sqrt(Math.pow(x - bubble.x, 2) + Math.pow(y - bubble.y, 2));
-        if (distance < minDistance) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    for (let i = 0; i < 10; i++) {
-      let x, y, size;
-      let attempts = 0;
-      do {
-        x = Math.random() * (window.innerWidth - margin * 2) + margin;
-        y = Math.random() * (window.innerHeight - margin * 2) + margin;
-        size = Math.random() * 0.5 + 0.8;
-        if (++attempts > 100) break; // Safety break to prevent infinite loops
-      } while (isOverlapping(x, y, size));
-
-      const text = "안녕하세요!";
-      newBubbles.push({
-        id: Date.now() + i,
-        x,
-        y,
-        text,
-        delay: i * 100,
-        size,
-      });
-    }
-
-    setBubbles(newBubbles);
-
-    setTimeout(() => {
-      setBubbles([]);
-    }, 3000);
-  }
-
-  const updateKeywordState = (textContent: string) => {
-    const trimmedContent = textContent.trim();
-    const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
-    const isMatch = (keyword: string, input: string, exact: boolean = true) => {
-      if (hasKorean(keyword) || hasKorean(input)) {
-        return exact ? keyword === input : keyword.startsWith(input);
-      } else {
-        return exact ? keyword.toLowerCase() === input.toLowerCase() : keyword.toLowerCase().startsWith(input.toLowerCase());
-      }
-    };
-
-    const exactMatch = Object.keys(keywordConfig).find(keyword =>
-      isMatch(keyword, trimmedContent, true)
-    );
-
-    if (exactMatch) {
-      setShowArrow(keywordConfig[exactMatch].href);
-      setLinkImageSrc(keywordConfig[exactMatch].image || null);
-      setSuggestion('');
-    } else {
-      setShowArrow(null);
-      setLinkImageSrc(null);
-      if (trimmedContent.length > 0) {
-        const matchingKeyword = Object.keys(keywordConfig).find(keyword =>
-          isMatch(keyword, trimmedContent, false) && !isMatch(keyword, trimmedContent, true)
-        );
-        if (matchingKeyword) {
-          setSuggestion(matchingKeyword.substring(trimmedContent.length));
-        } else {
-          setSuggestion('');
-        }
-      } else {
-        setSuggestion('');
-      }
-    }
-  };
-
-  const completeSuggestion = () => {
-    if (!suggestion) return;
-
-    const newContent = content + suggestion;
-    setContent(newContent);
-    setCursorPosition(newContent.length);
-    setSelectionStart(newContent.length);
-    setSelectionEnd(newContent.length);
-    setSuggestion('');
-
-    // Check if completed keyword has a link
-    const hasKorean = (str: string) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
-    const isExactMatch = (keyword: string, input: string) => {
-      if (hasKorean(keyword) || hasKorean(input)) {
-        return keyword === input;
-      } else {
-        return keyword.toLowerCase() === input.toLowerCase();
-      }
-    };
-
-    const exactMatch = Object.keys(keywordConfig).find(keyword =>
-      isExactMatch(keyword, newContent.trim())
-    );
-    if (exactMatch) {
-      setShowArrow(keywordConfig[exactMatch].href);
-      setLinkImageSrc(keywordConfig[exactMatch].image || null);
-    }
-
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.setSelectionRange(newContent.length, newContent.length);
-      }
-    }, 0);
-  };
-
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newContent = e.target.value;
-    setContent(newContent);
-    // Only update cursor/selection states if not composing via IME
-    if (!isComposingIME) {
-      setCursorPosition(e.target.selectionStart || 0);
-      setSelectionStart(e.target.selectionStart || 0);
-      setSelectionEnd(e.target.selectionEnd || 0);
-    }
-    setIsTyping(true);
-
-    updateKeywordState(newContent);
-
-    // Clear existing timeout
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
-    // Set new timeout to stop typing state after 0.2 second
-    typingTimeoutRef.current = setTimeout(() => {
-      setIsTyping(false);
-    }, 200);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    // If composing via IME, let the browser handle it
-    if (isComposingIME && !e.nativeEvent.isComposing) {
-      return; // Added !e.nativeEvent.isComposing to allow Enter/Tab at the end of composition
-    }
-
-    if ((e.key === 'Enter' || e.keyCode === 13) && !e.nativeEvent.isComposing) {
-      if (isMobile && suggestion) {
-        e.preventDefault();
-        completeSuggestion();
-        return;
-      }
-
-      if (showArrow) {
-        e.preventDefault();
-        arrowButtonRef.current?.click();
-        return;
-      }
-    }
-
-    // Handle Tab for autocomplete
-    if (e.key === 'Tab' && suggestion && !e.nativeEvent.isComposing) {
-      e.preventDefault();
-      completeSuggestion();
-      return;
-    }
-
-    // Handle Ctrl+A (Select All)
-    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-      e.preventDefault();
-      setSelectionStart(0);
-      setSelectionEnd(content.length);
-      setCursorPosition(content.length);
-      textarea.setSelectionRange(0, content.length);
-      return;
-    }
-
-    // Handle Delete and Backspace for selected text
-    if ((e.key === 'Delete' || e.key === 'Backspace') && selectionStart !== selectionEnd) {
-      e.preventDefault();
-      const start = Math.min(selectionStart, selectionEnd);
-      const end = Math.max(selectionStart, selectionEnd);
-      const newContent = content.substring(0, start) + content.substring(end);
-      setContent(newContent);
-      setCursorPosition(start);
-      setSelectionStart(start);
-      setSelectionEnd(start);
-      textarea.value = newContent;
-      textarea.setSelectionRange(start, start);
-      setIsTyping(true);
-
-      updateKeywordState(newContent);
-
-      // Clear existing timeout
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-
-      // Set new timeout to stop typing state after 0.2 second
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsTyping(false);
-      }, 200);
-      return;
-    }
-
-    // Handle arrow keys
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      // Only update cursor/selection states if not composing via IME
-      if (!isComposingIME) {
-        e.preventDefault();
-
-        setIsTyping(true);
-        if (typingTimeoutRef.current) {
-          clearTimeout(typingTimeoutRef.current);
-        }
-        typingTimeoutRef.current = setTimeout(() => {
-          setIsTyping(false);
-        }, 200);
-
-        let newPosition = cursorPosition;
-
-        if (e.key === 'ArrowLeft' && newPosition > 0) {
-          newPosition--;
-        } else if (e.key === 'ArrowRight' && newPosition < content.length) {
-          newPosition++;
-        } else if (e.key === 'ArrowUp') {
-          // Move to beginning of line or previous line
-          const lines = content.substring(0, newPosition).split('\n');
-          if (lines.length > 1) {
-            const currentLineStart = newPosition - lines[lines.length - 1].length;
-            const prevLineStart = currentLineStart - lines[lines.length - 2].length - 1;
-            const currentColumn = lines[lines.length - 1].length;
-            const prevLineLength = lines[lines.length - 2].length;
-            newPosition = Math.max(0, prevLineStart + Math.min(currentColumn, prevLineLength));
-          } else {
-            newPosition = 0;
-          }
-        } else if (e.key === 'ArrowDown') {
-          // Move to end of line or next line
-          const beforeCursor = content.substring(0, newPosition);
-          const afterCursor = content.substring(newPosition);
-          const currentLineEnd = afterCursor.indexOf('\n');
-
-          if (currentLineEnd !== -1) {
-            const lines = beforeCursor.split('\n');
-            const currentColumn = lines[lines.length - 1].length;
-            const nextLineStart = newPosition + currentLineEnd + 1;
-            const restOfContent = content.substring(nextLineStart);
-            const nextLineEnd = restOfContent.indexOf('\n');
-            const nextLineLength = nextLineEnd === -1 ? restOfContent.length : nextLineEnd;
-            newPosition = nextLineStart + Math.min(currentColumn, nextLineLength);
-          } else {
-            newPosition = content.length;
-          }
-        }
-
-        if (e.shiftKey) {
-          // Text selection with shift + arrow keys
-          if (selectionStart === selectionEnd) {
-            // Start new selection
-            setSelectionStart(cursorPosition);
-          }
-          setSelectionEnd(newPosition);
-          textarea.setSelectionRange(Math.min(selectionStart, newPosition), Math.max(selectionStart, newPosition));
-        } else {
-          // Clear selection and move cursor
-          setSelectionStart(newPosition);
-          setSelectionEnd(newPosition);
-          textarea.setSelectionRange(newPosition, newPosition);
-        }
-
-        setCursorPosition(newPosition);
-      }
-    }
-  };
-
-  const handleArrowClick = () => {
-    if (showArrow) {
-      if (showArrow === 'haeun_action') {
-        showHaeunBubbles();
-      } else if (showArrow === 'haeun_korean_action') {
-        showHaeunKoreanBubbles();
-      }
-    }
-  };
-
-  const renderTextWithSelection = () => {
-    if (content.length === 0) {
-      return <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>;
-    }
-
-    // If composing, we don't want to show the custom selection highlight.
-    // The browser's IME will handle its own visual feedback for the composing text.
-    if (isComposingIME) {
-      return (
-        <div className="inline-block align-middle">
-          <span>{content}</span>
-          {suggestion && (
-            <span style={{ color: '#ccc' }}>{suggestion}</span>
-          )}
-          {showArrow && showArrow !== 'hint_action' && (
-            showArrow === 'haeun_action' ? (
-              <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </button>
-            ) : (
-              <a href={showArrow} target="_blank" rel="noopener noreferrer" ref={arrowButtonRef as React.RefObject<HTMLAnchorElement>} className="ml-2 bg-red-500 rounded-full p-1 inline-flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </a>
-            )
-          )}
-        </div>
-      );
-    }
-
-    const hasSelection = selectionStart !== selectionEnd;
-    const start = Math.min(selectionStart, selectionEnd);
-    const end = Math.max(selectionStart, selectionEnd);
-
-    if (!hasSelection) {
-      // No selection, just render text with cursor
-      const beforeCursor = content.substring(0, cursorPosition);
-      const afterCursor = content.substring(cursorPosition);
-
-      return (
-        <div className="inline-block align-middle">
-          <span>{beforeCursor}</span>
-          {!suggestion && <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>}
-          <span>{afterCursor}</span>
-          {suggestion && (
-            <span style={{ color: '#ccc' }}>{suggestion}</span>
-          )}
-          {showArrow && showArrow !== 'hint_action' && (
-            (showArrow === 'haeun_action' || showArrow === 'haeun_korean_action') ? (
-              <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </button>
-            ) : (
-              <a href={showArrow} target="_blank" rel="noopener noreferrer" ref={arrowButtonRef as React.RefObject<HTMLAnchorElement>} className="ml-2 bg-red-500 rounded-full p-1 inline-flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </a>
-            )
-          )}
-        </div>
-      );
-    } else {
-      // Has selection, render with highlight
-      const beforeSelection = content.substring(0, start);
-      const selectedText = content.substring(start, end);
-      const afterSelection = content.substring(end);
-
-      return (
-        <div className="inline-block align-middle">
-          <span>{beforeSelection}</span>
-          <span
-            style={{
-              backgroundColor: 'rgba(255, 0, 0, 0.2)',
-            }}
-          >
-            {selectedText}
-          </span>
-          <span>{afterSelection}</span>
-          {showArrow && showArrow !== 'hint_action' && (
-            (showArrow === 'haeun_action' || showArrow === 'haeun_korean_action') ? (
-              <button ref={arrowButtonRef as React.RefObject<HTMLButtonElement>} onClick={handleArrowClick} className="ml-2 bg-red-500 rounded-full p-1">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </button>
-            ) : (
-              <a href={showArrow} target="_blank" rel="noopener noreferrer" ref={arrowButtonRef as React.RefObject<HTMLAnchorElement>} className="ml-2 bg-red-500 rounded-full p-1 inline-flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </a>
-            )
-          )}
-          {!hasSelection && cursorPosition === content.length && !showArrow && (
-            <span className={`custom-cursor ${isTyping ? 'no-blink' : ''}`}></span>
-          )}
-        </div>
-      );
-    }
-  };
-
-     const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-     // Check if the click target or its parent is an anchor tag, button, or a link image.
-     let target = e.target as HTMLElement;
-     while (target && target.tagName !== 'BODY') {
-       if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('[data-link-image]')) {
-         // If it's a link, let the default browser action happen and don't focus the textarea.
-         return;
-       }
-       target = target.parentElement!;
-     }
-
-     textareaRef.current?.focus();
-   };
-
   return (
-    <main
-      className="h-dvh bg-white text-black flex items-center justify-center relative cursor-text overflow-hidden"
-      onClick={handleClick}
-      onTouchStart={handleClick}
+    <motion.main 
+        className=" max-w-xs mx-auto text-black h-dvh flex flex-col justify-center font-marydale py-32 px-2 pl-0 overflow-hidden"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
     >
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
-        <Image src="/image/pin.png" alt="Pin" width={40} height={40} />
-            </div>
-
-      <div className="w-full max-w-4xl p-8 text-center -mt-80">
-        <div className="relative">
-          <div className="text-lg font-bold leading-relaxed" style={{ color: 'red' }}>
-            {renderTextWithSelection()}
-          </div>
-          {showArrow && showArrow !== 'haeun_action' && (
-            showArrow === 'hint_action' ? (
-              <div className="fade-in absolute top-full left-1/2 -translate-x-1/2 mt-4 flex flex-col gap-2 text-gray-300 text-lg">
-                <span>c0lo$o</span>
-                <span>ch@tfl!x</span>
-                <span>!nst@gr@m</span>
-              </div>
-            ) : (
-              linkImageSrc && (
-                <a 
-                  href={showArrow}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-link-image="true"
-                  className={`fade-in absolute top-full left-1/2 -translate-x-1/2 mt-2 cursor-pointer ${linkImageSrc === '/image/profilepic.png' ? 'w-20 h-20' : 'w-32 h-20'}`}
-                >
-                  <Image src={linkImageSrc} alt="Link image" width={300} height={300} className={`w-full h-full object-cover ${linkImageSrc === '/image/profilepic.png' ? 'rounded-full' : 'rounded-xl'}`} />
-                </a>
-              )
-            )
-          )}
-        </div>
-        <textarea
-          ref={textareaRef}
-          value={content}
-          onChange={handleContentChange}
-          onKeyDown={handleKeyDown}
-          onCompositionStart={() => setIsComposingIME(true)}
-          onCompositionEnd={(e) => {
-            setIsComposingIME(false);
-            // After composition ends, ensure selection/cursor and keyword state are updated for the final text
-            if (textareaRef.current) {
-              const newContent = textareaRef.current.value; // Get the final composed value
-              setContent(newContent); // Ensure content state is fully updated
-              const newPosition = newContent.length; // Cursor should be at the end
-              setCursorPosition(newPosition);
-              setSelectionStart(newPosition);
-              setSelectionEnd(newPosition);
-              updateKeywordState(newContent);
-
-              // Give a small delay to ensure the DOM is updated before setting selection
-              setTimeout(() => {
-                if (textareaRef.current) {
-                  textareaRef.current.setSelectionRange(newPosition, newPosition);
-                }
-              }, 0);
-            }
-          }}
-          className="absolute opacity-0 pointer-events-none"
-          autoFocus
-        />
-            </div>
-
-      <div
-        className="absolute bottom-4 right-5 font-marydale text-xs sm:text-sm cursor-help"
-        onMouseEnter={() => !isMobile && setShowHint(true)}
-        onMouseLeave={() => !isMobile && setShowHint(false)}
-        onClick={handleClockClick}
+      <motion.div 
+        className="text-lg font-bold text-left mb-8"
+        variants={itemVariants}
       >
-        {isMounted ? formatDate(dateTime) : null}
-        </div>
+        <p>HA</p>
+        <p className="-mt-2">EUN</p>
+      </motion.div>
 
-      {showHint && (
-        <div className="absolute bottom-12 right-5 z-20 fade-in w-max">
-          <div className="relative bg-red-500 text-white text-xs rounded-full py-2 px-3 ">
-            <p>need hint? type <span className="font-bold">hint</span>.</p>
-            <div className="absolute right-3 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-red-500"></div>
-          </div>
-        </div>
-      )}
+      <motion.div 
+        className="grid grid-cols-[3fr_4fr] grid-rows-3  mb-10 flex-grow"
+        variants={containerVariants}
+      >
+        {/* Item 1 */}
+        <motion.div variants={itemVariants} className="relative">
+            <Link href="https://www.youtube.com/@h_ablankcanvas" target="_blank" rel="noopener noreferrer" className="relative block w-full h-full">
+                <Image src="/image/1.png" alt="The Details" fill className="object-contain scale-125" />
+                <p className="absolute top-1 right-2 text-xs">01</p>
+            </Link>
+        </motion.div>
 
-      {bubbles.map(bubble => (
-        <div
-          key={bubble.id}
-          className="bubble"
-          style={{
-            left: `${bubble.x}px`,
-            top: `${bubble.y}px`,
-            '--bubble-size': bubble.size,
-            animationDelay: `${bubble.delay}ms`,
-          } as React.CSSProperties}
-        >
-          {bubble.text}
-        </div>
-      ))}
-    </main>
+        {/* Item 2 */}
+        <motion.div variants={itemVariants} className="relative flex flex-col justify-center items-center z-10">
+            <Link href="https://www.chatflix.app" target="_blank" rel="noopener noreferrer" className="relative   flex flex-col justify-center items-center z-10 w-full h-full">
+                <div className="w-full h-full relative">
+                    <Image src="/image/2.png" alt="Chatflix App" fill className="object-contain scale-50 translate-y-9" />
+                    <p className="text-xs pt-2 absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-4">02</p>
+                </div>
+            </Link>
+        </motion.div>
+
+        {/* Item 3 */}
+        <motion.div variants={itemVariants} className="relative z-10">
+            <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer" className="relative  block z-10 w-full h-full">
+            <Image src="/image/3.png" alt="Coloso" fill className="object-contain -translate-x-2 " />
+            <p className="absolute bottom-6 right-6 -translate-y-1/2 text-xs">03</p>
+            </Link>
+        </motion.div>
+        
+        {/* Item 4 */}
+        <motion.div variants={itemVariants} className="relative row-span-2 flex flex-col justify-center items-center z-0">
+            <Link href="https://www.instagram.com/h_ablankcanvas/" target="_blank" rel="noopener noreferrer" className="relative row-span-2 flex flex-col justify-center items-center z-0 w-full h-full">
+                <div className="w-full h-full relative">
+                    <Image src="/image/4.png" alt="Instagram" fill className="object-contain scale-[120%]" />
+                </div>
+                <p className="text-xs absolute bottom-1/2 left-8 translate-y-1 translate-x-3">04</p>
+            </Link>
+        </motion.div>
+
+        {/* Item 5 */}
+        <motion.div variants={itemVariants} className="relative z-10">
+            <Link href="https://hablankcanvas.com" target="_blank" rel="noopener noreferrer" className="relative  block z-10 w-full h-full">
+            <Image src="/image/5.png" alt="Youtube" fill className="object-contain -ml-2" />
+            <p className="absolute bottom-10 right-[-1rem] -translate-y-1/2 text-xs">05</p>
+            </Link>
+        </motion.div>
+      </motion.div>
+
+      <motion.div 
+        className="text-sm space-y-1 text-left"
+        variants={itemVariants}
+      >
+        <p>(01) youtube main (02) chatflix app (03) coloso - korean</p>
+        <p>(04) Instagram (05) home</p>
+      </motion.div>
+    </motion.main>
   );
 }
 
