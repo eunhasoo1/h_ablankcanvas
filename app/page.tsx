@@ -11,7 +11,7 @@ import image5 from '../assets/images/5.png';
 
 export default function Home() {
   return (
-    <main className=" max-w-xs mx-auto text-[#1E0807] h-dvh flex flex-col justify-center font-marydale py-20 pb-24 sm:py-24 sm:pb-28 px-2 pl-0 overflow-hidden">
+    <main className=" max-w-xs mx-auto text-[#1E0807] h-dvh flex flex-col justify-center font-marydale py-20 pb-24 sm:py-24 sm:pb-28 lg:py-28 lg:pb-32 ">
       <div className="text-lg font-bold text-left mb-8">
         <p>HA</p>
         <p className="-mt-2">EUN</p>
@@ -27,15 +27,15 @@ export default function Home() {
         {/* Item 2 */}
         <Link href="https://www.chatflix.app" target="_blank" rel="noopener noreferrer" className="relative   flex flex-col justify-center items-center z-10">
             <div className="w-full h-full relative">
-                <Image src={image2} alt="Chatflix App" fill className="object-contain scale-50 translate-y-9" />
-                <p className="text-xs pt-2 absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-4">02</p>
+                <Image src={image2} alt="Chatflix App" fill className="object-contain scale-50 translate-y-5 -translate-x-2" />
+                <p className="text-xs pt-2 absolute bottom-4 left-1/2 translate-y-3 -translate-x-4">02</p>
             </div>
         </Link>
 
         {/* Item 3 */}
         <Link href="https://bit.ly/4dDyZvR" target="_blank" rel="noopener noreferrer" className="relative  block z-10 ">
-          <Image src={image3} alt="Coloso" fill className="object-contain -translate-x-2 " />
-          <p className="absolute bottom-6 right-6 -translate-y-1/2 text-xs">03</p>
+          <Image src={image3} alt="Coloso" fill className="object-contain -translate-x-2 scale-105 translate-y-2" />
+          <p className="absolute bottom-4 right-5 -translate-y-1/2 text-xs">03</p>
         </Link>
 
         {/* Item 4 */}
@@ -43,13 +43,13 @@ export default function Home() {
             <div className="w-full h-full relative">
                 <Image src={image4} alt="Instagram" fill className="object-contain scale-[120%]" />
             </div>
-            <p className="text-xs absolute bottom-1/2 left-8 translate-y-1 translate-x-3">04</p>
+            <p className="text-xs absolute bottom-1/2 left-12 translate-y-2 translate-x-3">04</p>
         </Link>
 
         {/* Item 5 */}
         <Link href="https://hablankcanvas.com" target="_blank" rel="noopener noreferrer" className="relative  block z-10">
-          <Image src={image5} alt="Youtube" fill className="object-contain -ml-2" />
-          <p className="absolute bottom-10 right-[-1rem] -translate-y-1/2 text-xs">05</p>
+          <Image src={image5} alt="Youtube" fill className="object-contain  translate-y-4 translate-x-1" />
+          <p className="absolute bottom-3 right-[-1.8rem] -translate-y-1/2 text-xs">05</p>
         </Link>
       </div>
 
