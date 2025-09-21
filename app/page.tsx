@@ -53,7 +53,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="text-xs space-y-1 text-left ml-2">
+      <div className="text-sm space-y-1 text-left ml-2">
         <p>(01) youtube main (02) chatflix app (03) coloso - korean</p>
         <p>(04) Instagram (05) home</p>
       </div>
